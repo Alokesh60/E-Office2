@@ -61,11 +61,11 @@ function fetchApplication($appId){
 
 
 // store signature done at each level
-function storeSignature($appId, $logId, $actId, $level, $mode, $signatureData, $metaData = null){
+function storeSignature($appId, $logId, $actId, $level, $signatureData, $metaData = null){
     $pdo = getPDO();
     $metaJson = $metaData? json_encode($metaData) : null;
-    $data = $pdo->prepare("INSERT INTO applicationSigantures(appId, logId, actId, level, mode, signautreData, metaData) VALUES(?, ?, ?, ?, ?, ?, ?");
-    $data->execute([$appId, $logId, $actId, $level, $mode, $signatureData, $metaJson]);
+    $data = $pdo->prepare("INSERT INTO applicationSigantures(appId, logId, actId, level, signautreData, metaData) VALUES(?, ?, ?, ?, ?, ?");
+    $data->execute([$appId, $logId, $actId, $level, $signatureData, $metaJson]);
 
     return $pdo->lastInsertId();
 }
@@ -90,6 +90,16 @@ function addSignature($userId, $signatureData){
 
 }
 
+//if signature required at each level
+function reqSign($level){
+    $pdo = getPDO();
+    $data = $pdo->prepare("SELECT reqSign FROM workflowLevel WHERE level=?");
+    $data->execute([$level]);
+    $row = $data->fetch();
+    return $row && $row['reqSign']==1;
+    
+}
+
 
 // ask for consultations
 function generateConsult(){}
@@ -103,20 +113,42 @@ function checkPendingConsult(){}
 
 
 //forward application
-function forwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null, $signature){
+function forwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null, $signatureData){
     $pdo = getPDO();
     try{
         $pdo->beginTransaction();
         $data= $pdo->prepare("SELECT currentLevel, status FROM applications WHERE id=? FOR UPDATE");
         $data->execute([$appId]);
         $app= $data->fetch();
-        if(!$app) throw new Exception("Application not found");
+        if(!$app){
+            throw new Exception("Application not found");
+        }
+
+        if($app['status']=== 'approved'){
+            throw new Exception("Application already approved");
+        }
+        
+        if($app['status']=== 'rejected'){
+            throw new Exception("Application already rejected");
+        }
+
         //check pending consultation
-        //signature
+        
+        $requireSignature = reqSign($fromLevel);
+        if($requireSignature){
+            if(!verifySignature($signatureData)){
+                throw new Exception("Valid signature required");
+            }
+        }
         $data = $pdo->prepare("UPDATE applications SET currentLevel=?, status ='inReview' WHERE id=?");
         $data->execute([$toLevel, $appId]);
         $logId = logAction($appId, $fromLevel, $toLevel, 'forwarded', $actId, $comment);
-        //add signature
+        if($requireSignature){
+            $metaData= ['ip' =>$_SERVER['REMOTE_ADDR'] ?? null,
+            'ua'=> $_SERVER['HTTP_USER_AGENT']?? null];
+            storeSignature($appId, $logId, $actId, $fromLevel, $signatureData, $metaData);
+            
+        }
         $pdo->commit();
         return true;
     } catch(Exception $e){
@@ -127,7 +159,7 @@ function forwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null,
 
 
 //backward application
-function backwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null, $signature){
+function backwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null, $signatureData){
     $pdo = getPDO();
     try{
         $pdo->beginTransaction();
@@ -137,12 +169,31 @@ function backwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null
         if(!$app){
             throw new Exception("Application not found");
         }
+
+        if($app['status']=== 'approved'){
+            throw new Exception("Application already approved");
+        }
+        
+        if($app['status']=== 'rejected'){
+            throw new Exception("Application already rejected");
+        }
+
         //check for consultation 
-        //check for signature
+        $requireSignature = reqSign($fromLevel);
+        if($requireSignature){
+            if(!verifySignature($signatureData)){
+                throw new Exception("Valid signature required");
+            }
+        }
         $data =$pdo->prepare("UPDATE application SET currentLevel =?, status ='inReview' WHERE id=?");
         $data->execute([$toLevel, $appId]);
         $logId = logAction($app, $fromLevel, $toLevel, 'backward', $actId, $comment);
-        //log signature data in application
+        if($requireSignature){
+            $metaData= ['ip' =>$_SERVER['REMOTE_ADDR'] ?? null,
+            'ua'=> $_SERVER['HTTP_USER_AGENT']?? null];
+            storeSignature($appId, $logId, $actId, $fromLevel, $signatureData, $metaData);
+            
+        }
         $pdo->commit();
         return true;
     } catch(Exception $e){
@@ -154,22 +205,42 @@ function backwardApplication($appId, $actId, $fromLevel, $toLevel, $comment=null
 
 
 //reject application
-function rejectApplication($appId, $actId, $from, $reason, $signature){
+function rejectApplication($appId, $actId, $from, $reason, $signatureData){
     $pdo = getPDO();
     try{
         $pdo->beginTransaction();
         $data = $pdo->prepare("SELECT currentLevel, status FROM applications WHERE id=? FOR UPDATE");
         $data->execute([$appId]);
         $app = $data->fetch();
+
         if(!$app){
             throw new Exception("Application not found");
         }
-        //check if requires signature
+
+        if($app['status']=== 'approved'){
+            throw new Exception("Application already approved");
+        }
+
+        if($app['status']=== 'rejected'){
+            throw new Exception("Application already rejected");
+        }
+
+        $requireSignature = reqSign($from);
+        if($requireSignature){
+            if(!verifySignature($signatureData)){
+                throw new Exception("Valid signature required");
+            }
+        }
         //check for pending consultations
         $data = $pdo->prepare("UPDATE applications SET status='rejected' WHERE id=?");
         $data->execute([$appId]);
         $logId = logAction($appId, $from, null, 'rejected', $actId, $reason);
-        // add signature 
+        if($requireSignature){
+            $metaData= ['ip' =>$_SERVER['REMOTE_ADDR'] ?? null,
+            'ua'=> $_SERVER['HTTP_USER_AGENT']?? null];
+            storeSignature($appId, $logId, $actId, $from, $signatureData, $metaData);
+            
+        } 
         $pdo->commit();
         return true;
     } catch(Exception $e){
