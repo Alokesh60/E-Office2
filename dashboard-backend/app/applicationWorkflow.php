@@ -280,6 +280,63 @@ class ApplicationWorkflow
 
     
 
-   
-    
+    public function generateConsultation(
+        Application $app,
+        int $requestedBy,
+        int $requestedTo,
+        string $message
+    ): void {
+        DB::transaction(function () use ($app, $requestedBy, $requestedTo, $message) {
+
+            DB::table('consultations')->insert([
+                'application_id' => $app->id,
+                'requested_by'   => $requestedBy,
+                'requested_to'   => $requestedTo,
+                'message'        => $message,
+                'status'         => 'pending',
+                'created_at'     => now()
+            ]);
+
+            $email = DB::table('users')->where('id', $requestedTo)->value('email');
+
+            Mail::raw(
+                "Consultation requested for Application #{$app->id}\n\n{$message}",
+                fn ($mail) =>
+                    $mail->to($email)->subject('Application Consultation Request')
+            );
+        });
+    }
+
+    public function respondToConsultation(
+        int $consultationId,
+        int $responderId,
+        string $response
+    ): void {
+        DB::transaction(function () use ($consultationId, $responderId, $response) {
+
+            $consult = DB::table('consultations')
+                ->where('id', $consultationId)
+                ->where('status', 'pending')
+                ->lockForUpdate()
+                ->first();
+
+            if (!$consult) {
+                throw new Exception('Consultation not found or already resolved');
+            }
+
+            DB::table('consultations')->where('id', $consultationId)->update([
+                'response'     => $response,
+                'status'       => 'responded',
+                'responded_at' => now()
+            ]);
+
+            $email = DB::table('users')->where('id', $consult->requested_by)->value('email');
+
+            Mail::raw(
+                "Consultation response for Application #{$consult->application_id}\n\n{$response}",
+                fn ($mail) =>
+                    $mail->to($email)->subject('Consultation Response Received')
+            );
+        });
+    }
 }
