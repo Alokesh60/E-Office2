@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Mail;
-use Exception; 
+use Exception;
 
 
 
@@ -74,7 +74,7 @@ class ApplicationSignature extends Model
 
 class ApplicationWorkflow
 {
-   
+
 
     private function logAction(
         Application $app,
@@ -130,7 +130,7 @@ class ApplicationWorkflow
             ->exists();
     }
 
-    
+
 
     public function createApplication(int $userId, string $type, array $data): Application
     {
@@ -278,8 +278,30 @@ class ApplicationWorkflow
         });
     }
 
-    
+    public function approveByDean(Application $app, int $actorId, ?string $signature)
+    {
+        DB::transaction(function () use ($app, $actorId, $signature) {
+            if ($app->current_level != 3) {
+                throw new Exception('Only Dean Student Welfare can give final approval');
+            }
 
-   
-    
+            $app->update([
+                'status' => 'approved',
+                'current_level' => 3
+            ]);
+
+            $log = $this->logAction($app, 3, null, 'approved', $actorId, 'Final approved by Dean SW');
+
+            if ($signature) {
+                $log->signatures()->create([
+                    'application_id'     => $app->id,
+                    'application_log_id' => $log->id,
+                    'actor_id'           => $actorId,
+                    'level'              => 3,
+                    'signature_data'     => $signature,
+                    'meta_data'          => $this->signatureMeta()
+                ]);
+            }
+        });
+    }
 }
