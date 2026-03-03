@@ -1,42 +1,45 @@
 import React from 'react';
+import { Link, useLocation } from 'react-router-dom';
 
 
 const Sidebar = () => {
+  const location = useLocation();
+  
   return (
         
-        <nav class="nav">
-            <ul class="nav__list">
-                <a href="#" class="nav__link active-link">
-                    <i class="ri-dashboard-3-line"></i>
-                    <span class="nav__name">Home</span>
-                </a>
+        <nav className="nav">
+            <ul className="nav__list">
+                <Link to="/" className={`nav__link ${location.pathname === '/' ? 'active-link' : ''}`}>
+                    <i className="ri-dashboard-3-line"></i>
+                    <span className="nav__name">Home</span>
+                </Link>
 
-                <a href="#" class="nav__link">
-                    <i class="ri-account-box-line"></i>
-                    <span class="nav__name">Accounts</span>
-                </a>
+                <Link to="/account" className={`nav__link ${location.pathname === '/account' ? 'active-link' : ''}`}>
+                    <i className="ri-account-box-line"></i>
+                    <span className="nav__name">Accounts</span>
+                </Link>
 
-                <a href="#" class="nav__link">
-                    <i class="ri-rocket-line"></i>
-                    <span class="nav__name">Applications</span>
-                </a>
+                <Link to="#" className="nav__link">
+                    <i className="ri-rocket-line"></i>
+                    <span className="nav__name">Applications</span>
+                </Link>
 
-                <a href="#" class="nav__link">
-                    <i class="ri-file-list-3-line"></i>
-                    <span class="nav__name">Files</span>
-                </a>
+                <Link to="#" className="nav__link">
+                    <i className="ri-file-list-3-line"></i>
+                    <span className="nav__name">Files</span>
+                </Link>
 
-                <a href="#" class="nav__link">
-                    <i class="ri-settings-3-line"></i>
-                    <span class="nav__name">Settings</span>
-                </a>
+                <Link to="#" className="nav__link">
+                    <i className="ri-settings-3-line"></i>
+                    <span className="nav__name">Settings</span>
+                </Link>
             </ul>
 
-            <div class="nav__circle-1"></div>
-            <div class="nav__circle-2"></div>
+            <div className="nav__circle-1"></div>
+            <div className="nav__circle-2"></div>
 
-            <div class="nav__square-1"></div>
-            <div class="nav__square-2"></div>
+            <div className="nav__square-1"></div>
+            <div className="nav__square-2"></div>
         </nav>
 
   );
