@@ -1,0 +1,316 @@
+/* Wrapper: clears topbar, no overlap. Do not use absolute positioning. */
+.accountRoot {
+  width: 135%;
+  min-height: 100%;
+  box-sizing: border-box;
+}
+
+/* Content starts below topbar via padding-top only */
+.accountPage {
+  padding: 140px 40px 40px 40px;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  position: relative;
+  z-index: 1;
+}
+
+/* MAIN LAYOUT – 3 columns, stretch height (Image-2 / Figma) */
+.accountWrapper {
+  width: 100%;
+  max-width: none;
+  margin: 0;
+  padding-right: 40px;
+  display: grid;
+  grid-template-columns: 280px 1fr 320px;
+  gap: 24px;
+  align-items: stretch;
+}
+
+/* COMMON CARD */
+.card {
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  background: #eaf1f7;
+}
+
+.accountForm,
+.profileCard {
+  height: 100%;
+  min-height: 0;
+}
+
+/* LEFT NAV – with icons */
+.accountNav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.accountNav li {
+  margin-bottom: 6px;
+  list-style: none;
+}
+
+
+.accountNav li i {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.accountNav li {
+  list-style: none;
+  margin-bottom: 6px;
+}
+
+.navItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  font-weight: 500;
+  font-family: "Segoe UI", sans-serif;
+  font-size: 16px;
+  color: #4a5660;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
+}
+
+.navItem i {
+  font-size: 20px;
+}
+
+.navItem:hover:not(.active):not(.logout) {
+  background: rgba(11, 46, 79, 0.06);
+}
+
+.active {
+  background: #0b2e4f;
+  color: #fff;
+  /* border-left: 4px solid #1d6ef2; */
+}
+
+.active i {
+  color: #ffffff;
+}
+.logoutBtn {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: #d9534f;
+  cursor: pointer;
+}
+
+.logoutBtn i {
+  color: #d9534f;
+}
+
+.logoutBtn:hover {
+  background: rgba(217, 83, 79, 0.08);
+}
+
+
+/* FORM – match Image-2 spacing and layout */
+.accountForm h1 {
+  margin: 0 0 18px 0;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 35px;
+  color: #000;
+  padding: 10px 0px 0px 0px;
+}
+
+.accountForm h4 {
+  margin: 24px 0 12px 0;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 20px;
+  color: #000;
+}
+
+.accountForm h4:first-of-type {
+  margin-top: 0;
+}
+
+.accountForm label {
+  display: block;
+  font-size: 18px;
+  margin: 12px 0 6px 0;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 500;
+  color: #022544;
+}
+
+.accountForm input {
+  width: 100%;
+  height: 50px;
+  border-radius: 10px;
+  border: 1px solid #dce6f2;
+  padding: 0 12px;
+  font-size: 14px;
+  font-family: "Segoe UI", sans-serif;
+  color: #000;
+  outline: none;
+  transition: border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.accountForm input:focus {
+  border-color: #0b2e4f;
+}
+
+.accountForm input::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 28px;
+  padding-top: 8px;
+  margin: 30px 0px 20px 0px
+}
+
+.primary {
+  background: #0b2e4f;
+  color: #fff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+}
+
+.primary:hover {
+  background: #0a2540;
+}
+
+/* PROFILE – stretch to match form card height */
+.profileCard {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  background: #eaf1f7;
+}
+
+.profileCard h3 {
+  margin: 0 0 16px 0;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  color: #000;
+}
+
+.avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin: 0 auto 14px auto;
+  object-fit: cover;
+  border: 3px solid #0b2e4f;
+  display: block;
+}
+
+.secondary {
+  background: #0b2e4f;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 10px;
+  margin: 0 auto 20px auto;
+  cursor: pointer;
+  font-family: "Segoe UI", sans-serif;
+  font-weight: 500;
+  font-size: 16px;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.secondary:hover {
+  background: #0a2540;
+}
+
+.profileInfo {
+  text-align: left;
+  font-size: 16px;
+  margin-top: auto;
+  width: 100%;
+  font-family: "Segoe UI", sans-serif;
+}
+
+.profileInfo div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #dce6f2;
+}
+
+.profileInfo div:last-child {
+  border-bottom: none;
+}
+
+.profileInfo span:first-child {
+  font-weight: 600;
+  color: #4a5660;
+  
+}
+
+.profileInfo span:last-child {
+  font-weight: 500;
+  color: #000;
+}
+
+/* Tablet: profile below form */
+@media (max-width: 1200px) {
+  .accountWrapper {
+    grid-template-columns: 1fr;
+    max-width: 1400px;
+  }
+
+  .accountNav {
+    order: 2;
+  }
+
+  .accountForm {
+    order: 1;
+  }
+
+  .profileCard {
+    order: 3;
+  }
+}
+
+/* Mobile: stack, reduce top padding if needed */
+@media (max-width: 768px) {
+  .accountPage {
+    padding: 120px 20px 24px 20px;
+  }
+
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .actions {
+    justify-content: center;
+  }
+}
+.nav {
+  z-index: 1000;
+}
