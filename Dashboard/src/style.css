@@ -907,12 +907,14 @@ position: absolute;
     flex: 1;
 }
 
+
 @media (max-width: 1920px) {
-    .main-container {
+    .dashboard-only .main-container {
         transform: scale(0.85);
         transform-origin: top left;
     }
 }
+
 
 @media (max-width: 1536px) {
     .main-container {
@@ -983,3 +985,7 @@ position: absolute;
         margin-bottom: 20px;
     }
 }
+.settings-page-active {
+  overflow: hidden;
+}
+/* Disable dashboard scaling on Account page */
