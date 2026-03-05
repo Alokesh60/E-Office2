@@ -915,6 +915,7 @@ position: absolute;
     }
 }
 
+
 @media (max-width: 1536px) {
     .main-container {
         transform: scale(0.77);
@@ -983,5 +984,8 @@ position: absolute;
         height: auto;
         margin-bottom: 20px;
     }
+}
+.settings-page-active {
+  overflow: hidden;
 }
 /* Disable dashboard scaling on Account page */

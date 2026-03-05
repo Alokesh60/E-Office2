@@ -53,50 +53,69 @@
 }
 
 .accountNav li {
+  margin-bottom: 6px;
+  list-style: none;
+}
+
+
+.accountNav li i {
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.accountNav li {
+  list-style: none;
+  margin-bottom: 6px;
+}
+
+.navItem {
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
   border-radius: 12px;
   font-weight: 500;
-  cursor: pointer;
-  margin-bottom: 6px;
   font-family: "Segoe UI", sans-serif;
   font-size: 16px;
   color: #4a5660;
-  transition: background-color 0.2s ease;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  border-left: 4px solid transparent;
 }
 
-.accountNav li i {
+.navItem i {
   font-size: 20px;
-  flex-shrink: 0;
 }
 
-.accountNav li.active {
-  background: #0b2e4f;
-  color: #fff;
-}
-
-.accountNav li.active i {
-  color: #fff;
-}
-
-.accountNav li.logout {
-  margin-top: 20px;
-  color: #d9534f;
-}
-
-.accountNav li.logout i {
-  color: #d9534f;
-}
-
-.accountNav li:hover:not(.active):not(.logout) {
+.navItem:hover:not(.active):not(.logout) {
   background: rgba(11, 46, 79, 0.06);
 }
 
-.accountNav li.logout:hover {
+.active {
+  background: #0b2e4f;
+  color: #fff;
+  /* border-left: 4px solid #1d6ef2; */
+}
+
+.active i {
+  color: #ffffff;
+}
+.logoutBtn {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  color: #d9534f;
+  cursor: pointer;
+}
+
+.logoutBtn i {
+  color: #d9534f;
+}
+
+.logoutBtn:hover {
   background: rgba(217, 83, 79, 0.08);
 }
+
 
 /* FORM – match Image-2 spacing and layout */
 .accountForm h1 {

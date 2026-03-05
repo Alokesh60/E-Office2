@@ -29,7 +29,7 @@ const Sidebar = () => {
                     <span className="nav__name">Files</span>
                 </Link>
 
-                <Link to="#" className="nav__link">
+                <Link to="/settings" className={`nav__link ${location.pathname === '/settings' ? 'active-link' : ''}`}>
                     <i className="ri-settings-3-line"></i>
                     <span className="nav__name">Settings</span>
                 </Link>
