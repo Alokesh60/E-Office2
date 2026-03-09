@@ -57,7 +57,6 @@
   list-style: none;
 }
 
-
 .accountNav li i {
   font-size: 20px;
   flex-shrink: 0;
@@ -115,7 +114,6 @@
 .logoutBtn:hover {
   background: rgba(217, 83, 79, 0.08);
 }
-
 
 /* FORM – match Image-2 spacing and layout */
 .accountForm h1 {
@@ -181,7 +179,7 @@
   justify-content: flex-end;
   margin-top: 28px;
   padding-top: 8px;
-  margin: 30px 0px 20px 0px
+  margin: 30px 0px 20px 0px;
 }
 
 .primary {
@@ -269,7 +267,6 @@
 .profileInfo span:first-child {
   font-weight: 600;
   color: #4a5660;
-  
 }
 
 .profileInfo span:last-child {
