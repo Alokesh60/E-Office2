@@ -9,14 +9,12 @@ import About from "./pages/About";
 import HelpAndSupport from "./pages/HelpAndSupport";
 import Files from "./pages/Files";
 
-
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
           <Route index element={<Dashboard />} />
-
           <Route path="account" element={<Account />}>
             <Route path="security" element={<Security />} />
             <Route path="about" element={<About />} />

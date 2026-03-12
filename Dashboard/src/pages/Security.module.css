@@ -2,6 +2,12 @@
   font-size: 32px;
   margin-bottom: 20px;
 }
+.settingsPage {
+  height: calc(100vh - 120px); /* subtract topbar height */
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
 
 .securityGrid {
   display: grid;

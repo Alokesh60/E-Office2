@@ -70,8 +70,8 @@ main {
   width: 80px;
   height: max-content;
   position: fixed;
-  inset: 0;
-  margin: 200px 0;
+  top: 200px;   /* distance from top */
+  left: 0;
 }
 .nav__list {
   position: relative;
@@ -172,6 +172,7 @@ main {
     align-items: center;
     z-index: 10;
 }
+
 .small, small{
     font-size: .875em;
 }
@@ -299,10 +300,10 @@ h1{
 
 .profile-card {
     position: absolute;
-    left: 50px;
+        left: 50px;
     top: 145px;
-    width: 466px;
-    height: 160px;
+    width: 450px;
+    height: 150px;
     background-color: #E9F0F8;
     border-radius: 25px;
     padding: 35px 25px;
@@ -363,13 +364,14 @@ h1{
     text-align: left;
     padding: 0;
     margin-top: 5px;
+    color: #022544;
 }
 .progress-card {
     position: absolute;
     left: 50px;
-    top: 345px;
-    width: 466px;
-    height: 160px;
+    top: 335px;
+     width: 450px;
+    height: 150px;
     background-color: #E9F0F8;
     border-radius: 25px;
     padding: 0;
@@ -392,12 +394,12 @@ h1{
 .progress-title {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    font-size: 30px;
+    font-size: 28px;
     line-height: 1.171875em;
     color: #000000;
     margin: 0;
     position: absolute;
-    left: 140px;
+    left: 135px;
     top: 45px;
 }
 
@@ -450,20 +452,19 @@ h1{
     top: 90px;
 }
 .complete-now-btn {
-    background-color: #022544;
+      background-color: #022544;
     color: #FFFFFF;
     border: none;
     border-radius: 10px;
     padding: 10px;
     font-family: 'Roboto', sans-serif;
     font-weight: 400;
-    font-size: 15px;
-    line-height: 1.171875em;
+    font-size: 12px;
     cursor: pointer;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     position: absolute;
     left: 322px;
-    top: 108px;
+    top: 100px;
     white-space: nowrap;
 }
 .announcement-card {
@@ -471,7 +472,7 @@ h1{
     left: 566px;
      top: 145px;
     width: 834px;
-    height: 360px;
+    height: 340px;
     background: linear-gradient(180deg, rgba(83, 150, 195, 1) 0%, rgba(31, 79, 128, 1) 100%);
     border-radius: 25px;
     padding: 20px 40px;
@@ -491,19 +492,21 @@ h1{
 }
 
 .statistics-card {
-position: absolute;
+    position: absolute;
     left: 1450px;
-     top: 145px;
-    width: 300px;
-    height: 360px;
+    top: 145px;
+    width: 280px;
+    height: 340px;
     background-color: #E9F0F8;
     border-radius: 25px;
-    padding: 18px 50px 15px 35px;
+    padding: 10px 25px 0px 26px;
     box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    align-items: center;
+    gap: 5px;
 }
+
 
 .statistics-title {
     font-family: 'Roboto', sans-serif;
@@ -624,9 +627,9 @@ position: absolute;
     position: absolute;
     left: 50px;
     /* top: 555px; */
-    bottom: 135px;
+    bottom: 165px;
     width: 360px;
-    height: 385px;
+    height: 365px;
     background-color: #E9F0F8;
     border-radius: 25px;
     padding: 25px;
@@ -640,8 +643,6 @@ position: absolute;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0;
-    margin-bottom: 5px;
 }
 
 .calendar-nav-btn {
@@ -673,15 +674,6 @@ position: absolute;
     margin: 0;
 }
 
-.calendar-weekdays {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  gap: 4px;
-  text-align: center;
-  padding: 4px 0;
-  font-size: 11px;
-}
-
 .weekday {
     width: 40px;
     height: 29px;
@@ -698,14 +690,6 @@ position: absolute;
     color: #022544;
     border-radius: 5px;
 }
-.calendar-dates {
-  display: grid;
-  grid-template-columns: repeat(7, 1fr);
-  grid-template-rows: repeat(6, 1fr); /* 6 rows = fixed height calendar */
-  gap: 4px;
-  height: 250px;        /* fits inside your 360px container */
-  margin-top: 4px;
-}
 
 .date-row {
     display: flex;
@@ -716,16 +700,15 @@ position: absolute;
 .calendar-weekdays {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
-  gap: 6px;
+  gap: 4px;
   text-align: center;
   padding: 6px 0;
-  margin-top: 8px;
 }
 
 .calendar-dates {
   display: grid;
   grid-template-columns: repeat(7, 1fr); /* 7 columns for Sun..Sat */
-  gap: 8px;
+  gap: 7px;
   margin-top: 8px;
   align-items: start; /* top-align each cell so rows look consistent */
 }
@@ -821,9 +804,9 @@ position: absolute;
     position: absolute;
     left: 912px;
     /* top: 555px; */
-    bottom: 135px;
+    bottom: 165px;
     width: 840px;
-    height: 385px;
+    height: 365px;
     background-color: #E9F0F8;
     border-radius: 25px;
     padding: 25px;
@@ -841,12 +824,12 @@ position: absolute;
 }
 
 .quick-access-card {
-    position: absolute;
+        position: absolute;
     left: 480px;
     /* top: 555px; */
-    bottom: 135px;
+    bottom: 165px;
     width: 360px;
-    height: 385px;
+    height: 365px;
     background-color: #E9F0F8;
     border-radius: 25px;
     padding: 25px;
@@ -858,23 +841,24 @@ position: absolute;
 .quick-access-title {
     font-family: 'Roboto', sans-serif;
     font-weight: 500;
-    font-size: 25px;
+    font-size: 23px;
     line-height: 1.171875em;
     color: #000000;
+    display: flex;
+    justify-content: center;
     margin: 0;
 }
 
 .quick-access-items {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    flex: 1;
+    gap: 10px;
 }
 
 .quick-access-item {
     background-color: #C7DAF0;
     border-radius: 12px;
-    padding: 19px;
+    padding: 17px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -986,7 +970,17 @@ position: absolute;
         margin-bottom: 20px;
     }
 }
-.settings-page-active {
+.scroll-page-active {
   overflow: hidden;
 }
+.files-page-active {
+  overflow: hidden;
+}
+.account-page-active{
+    overflow: hidden;
+}
+.settings-page-active{
+    overflow: hidden;
+}
+
 /* Disable dashboard scaling on Account page */

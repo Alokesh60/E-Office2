@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import styles from "./Files.module.css";
 
 const Files = () => {
+    useEffect(() => {
+      document.body.classList.add("files-page-active");
+      return () => document.body.classList.remove("files-page-active");
+    }, []);
   const [folders] = useState([
     "Documents",
     "Assignments",
