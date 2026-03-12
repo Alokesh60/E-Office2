@@ -24,7 +24,7 @@ const Sidebar = () => {
                     <span className="nav__name">Applications</span>
                 </Link>
 
-                <Link to="#" className="nav__link">
+                <Link to="/files" className={`nav__link ${location.pathname === '/files' ? 'active-link' : ''}`}>
                     <i className="ri-file-list-3-line"></i>
                     <span className="nav__name">Files</span>
                 </Link>

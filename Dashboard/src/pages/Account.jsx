@@ -46,19 +46,7 @@ const Account = () => {
                 </NavLink>
               </li>
 
-              <li>
-                <NavLink
-                  to="application"
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${styles.navItem} ${styles.active}`
-                      : styles.navItem
-                  }
-                >
-                  <i className="ri-apps-line" />
-                  <span>Application Settings</span>
-                </NavLink>
-              </li>
+
 
               <li>
                 <NavLink

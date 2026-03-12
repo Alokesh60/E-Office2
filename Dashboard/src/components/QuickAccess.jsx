@@ -11,11 +11,11 @@ const QuickAccess = () => {
         </div>
         <div className="quick-access-item">
           <img src="/images/apply-icon.png" alt="New Application" className="quick-access-icon" />
-          <span className="quick-access-text">New Application</span>
+          <span className="quick-access-text">Applications</span>
         </div>
         <div className="quick-access-item">
           <img src="/images/apply-icon.png" alt="New Application" className="quick-access-icon" />
-          <span className="quick-access-text-large">Quick Access-I</span>
+          <span className="quick-access-text-large">Progress</span>
         </div>
       </div>
     </section>
