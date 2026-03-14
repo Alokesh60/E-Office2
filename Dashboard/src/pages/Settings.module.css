@@ -1,5 +1,9 @@
 .settingsPage{
-  padding:140px 40px 40px;
+  padding:0px 25px 25px;
+  background:#e4eef5;
+  border-radius:25px;
+  box-shadow:0 12px 28px rgba(0,0,0,0.08);
+  
 }
 
 /* HEADER */
@@ -13,11 +17,14 @@
 
 .header h1{
   font-size:36px;
-  font-weight: 700;
+  font-weight: 500;
+  margin-top: 15px;
+  margin-left: 15px;
 }
 
 .header p{
-  color:#5b6b79;
+  color:#496c8a;
+  margin-left: 15px;
 }
 
 .illustration{
@@ -28,9 +35,9 @@
 
 .settingsLayout{
   display:grid;
-  grid-template-columns:1fr 1fr;
+  grid-template-columns:1.4fr 1fr;
   gap:30px;
-  width: 130%;
+  width:100%;
 }
 
 .leftColumn{
@@ -46,7 +53,7 @@
 /* CARD */
 
 .card{
-  background:#eaf1f7;
+  background:#d7e1e9;
   padding:25px;
   border-radius:18px;
   box-shadow:0 12px 28px rgba(0,0,0,0.08);
@@ -100,9 +107,9 @@ select{
   border:1px solid #ccc;
 }
 .profileIllustration {
-  width: 220px;
+  width: 200px;
   height: auto;
-  margin: -15px 19px -30px 70px;
+  margin-left:auto;
 }
 
 /* NOTIFICATIONS */
@@ -168,11 +175,10 @@ select{
 .bottomBtns{
   margin-top:30px;
   display:flex;
-  justify-content:center;
-  gap: 20px;
-  width: 130%;
+  justify-content:flex-end;
+  gap:20px;
+  width:100%;
 }
-
 .resetBtn{
   padding:10px 20px;
   border:none;

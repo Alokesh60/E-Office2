@@ -1,9 +1,9 @@
 import React from 'react';
-
+import styles from "./Announcement.module.css";
 const Announcement = () => {
   return (
-    <section class="announcement-card">
-                  <h2 class="announcement-title">Announcement</h2>
+    <section className={styles.announcement_card}>
+                  <h2 className={styles.announcement_title}>Announcement</h2>
                 </section>
   );
 };

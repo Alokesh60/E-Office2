@@ -9,13 +9,16 @@ const DashboardLayout = () => {
       return () => document.body.classList.remove("scroll-page-active");
     }, []);
   return (
+    <>
+    <Topbar />
     <div className="main-container">
       <Sidebar />
       <main className="content-area">
-        <Topbar />
+        
         <Outlet />
       </main>
     </div>
+    </>
   );
 };
 

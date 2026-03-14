@@ -152,36 +152,6 @@ const Account = () => {
             <Outlet />
           </div>
 
-          {/* RIGHT – Profile Summary Card */}
-          <div className={`${styles.card} ${styles.profileCard}`}>
-            <h3>Profile</h3>
-            <img
-              src="/images/profile.png"
-              alt="Profile"
-              className={styles.avatar}
-            />
-            <button type="button" className={styles.secondary}>
-              Complete Now
-            </button>
-            <div className={styles.profileInfo}>
-              <div>
-                <span>Role:</span>
-                <span>Student</span>
-              </div>
-              <div>
-                <span>Department:</span>
-                <span>Computer Science</span>
-              </div>
-              <div>
-                <span>Programme:</span>
-                <span>B.Tech</span>
-              </div>
-              <div>
-                <span>Semester:</span>
-                <span>3rd Semester</span>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
     </div>

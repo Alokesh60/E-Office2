@@ -57,6 +57,7 @@ const About = () => {
           platform ultimately creates a faster, more organized, and more
           convenient administrative experience for both students and staff.
         </p>
+        <p>This section demonstrated the implementation of the account management interface, highlighting its structure, usability, and integration within the overall E-Office system.</p>
       </div>
       <div className={styles.aboutFooter}>
         <span className={styles.footerMain}>
