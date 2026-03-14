@@ -1,13 +1,13 @@
 /* Wrapper: clears topbar, no overlap. Do not use absolute positioning. */
 .accountRoot {
-  width: 135%;
+  width: 100%;
   min-height: 100%;
   box-sizing: border-box;
 }
 
 /* Content starts below topbar via padding-top only */
 .accountPage {
-  padding: 140px 40px 40px 40px;
+  padding: 0px 40px 40px 40px;
   min-height: 100%;
   box-sizing: border-box;
   background: transparent;
@@ -20,9 +20,8 @@
   width: 100%;
   max-width: none;
   margin: 0;
-  padding-right: 40px;
   display: grid;
-  grid-template-columns: 280px 1fr 320px;
+  grid-template-columns: 280px 1fr;
   gap: 24px;
   align-items: stretch;
 }

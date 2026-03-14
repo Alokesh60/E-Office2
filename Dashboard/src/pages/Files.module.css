@@ -1,5 +1,5 @@
 .filesPage{
-  padding:140px 40px 40px;
+  padding:0px 40px 40px;
 }
 
 /* LAYOUT */
@@ -7,7 +7,7 @@
 .filesLayout{
   display:flex;
   gap:25px;
-      width: 135%;
+  width: 100%;
 }
 
 /* LEFT BOX */

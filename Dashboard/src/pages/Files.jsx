@@ -133,38 +133,6 @@ const Files = () => {
           </div>
         </div>
 
-        {/* RIGHT CONTAINER */}
-        <div className={styles.previewContainer}>
-          <h3>File Information</h3>
-
-          <div className={styles.previewCard}>
-            <img
-              src="/images/preview.png"
-              alt="preview"
-              className={styles.previewImage}
-            />
-
-            <h4>Resume.pdf</h4>
-
-            <p>Today, 12:25 PM</p>
-            <p>350 KB</p>
-
-            <div className={styles.previewActions}>
-              <button className={styles.downloadBtn}>Download</button>
-
-              <button className={styles.renameBtn}>Rename</button>
-
-              <button className={styles.deleteBtn}>Delete</button>
-            </div>
-          </div>
-
-          
-            <p className={styles.fileHelpText}>
-              Use this panel to preview and manage your uploaded documents.
-              Files stored here can be reused when submitting applications
-              within the E-Office system.
-            </p>
-          </div>
         </div>
       </div>
     

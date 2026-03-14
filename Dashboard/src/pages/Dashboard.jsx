@@ -10,14 +10,36 @@ import RecentActivities from '../components/RecentActivities';
 const Dashboard = () => {
   return (
     <div className="dashboard-grid">
-      <ProfileCard />
-      <ProfileCompletion />
-      <Announcement />
-      <ApplicationStats />
-      <CalendarCard />
-      <RecentActivities />
-      <QuickAccess />
-    </div>
+
+  <div className="profile-area">
+    <ProfileCard />
+  </div>
+
+  <div className="completion-area">
+    <ProfileCompletion />
+  </div>
+
+  <div className="announcement-area">
+    <Announcement />
+  </div>
+
+  <div className="stats-area">
+    <ApplicationStats />
+  </div>
+
+  <div className="calendar-area">
+    <CalendarCard />
+  </div>
+
+  <div className="quick-area">
+    <QuickAccess />
+  </div>
+
+  <div className="recent-area">
+    <RecentActivities />
+  </div>
+
+</div>
   );
 };
 

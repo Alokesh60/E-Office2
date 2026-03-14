@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import styles from "./CalendarCard.module.css";
 const CalendarCard = () => {
   const today = new Date();
 
@@ -44,7 +44,7 @@ const CalendarCard = () => {
 
     // Blank cells before first day
     for (let i = 0; i < startDay; i++) {
-      cells.push(<div key={`blank-${i}`} className="date-cell"></div>);
+      cells.push(<div key={`blank-${i}`} className={styles.date_cell}></div>);
     }
 
     // Actual days
@@ -57,15 +57,16 @@ const CalendarCard = () => {
       const isHoliday = events.holiday.includes(d);
       const isDeadline = events.deadline.includes(d);
 
-      let className = "date-cell";
-      if (isToday) className += " today";
-      if (isHoliday) className += " holiday";
-      if (isDeadline) className += " deadline";
+      const classes = [styles.date_cell];
+
+      if (isToday) classes.push(styles.today);
+      if (isHoliday) classes.push(styles.holiday);
+      if (isDeadline) classes.push(styles.deadline);
 
       cells.push(
-        <div key={d} className={className}>
+        <div key={d} className={classes.join(" ")}>
           {d}
-        </div>
+        </div>,
       );
     }
 
@@ -73,51 +74,47 @@ const CalendarCard = () => {
   };
 
   return (
-    <section className="calendar-card card">
-
+    <section className={`${styles.calendar_card} card`}>
       {/* HEADER */}
-      <div className="calendar-header">
-        <button className="calendar-nav-btn" onClick={handlePrevMonth}>
+      <div className={styles.calendar_header}>
+        <button className={styles.calendar_nav_btn} onClick={handlePrevMonth}>
           <i className="ri-arrow-left-s-line"></i>
         </button>
 
-        <h3 className="calendar-month">{monthTitle}</h3>
+        <h3 className={styles.calendar_month}>{monthTitle}</h3>
 
-        <button className="calendar-nav-btn" onClick={handleNextMonth}>
+        <button className={styles.calendar_nav_btn} onClick={handleNextMonth}>
           <i className="ri-arrow-right-s-line"></i>
         </button>
       </div>
 
       {/* WEEKDAYS */}
-      <div className="calendar-weekdays">
+      <div className={styles.calendar_weekdays}>
         {["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"].map((day) => (
-          <div key={day} className="weekday">
+          <div key={day} className={styles.weekday}>
             {day}
           </div>
         ))}
       </div>
 
       {/* DATES */}
-      <div className="calendar-dates">
-        {renderDates()}
-      </div>
+      <div className={styles.calendar_dates}>{renderDates()}</div>
 
       {/* LEGEND */}
-      <div className="calendar-legend">
-        <div className="legend-item-cal">
-          <div className="legend-box today"></div>
+      <div className={styles.calendar_legend}>
+        <div className={styles.legend_item_cal}>
+          <div className={`${styles.legend_box} ${styles.today}`}></div>
           <span>Today</span>
         </div>
-        <div className="legend-item-cal">
-          <div className="legend-box holiday"></div>
+        <div className={styles.legend_item_cal}>
+          <div className={`${styles.legend_box} ${styles.holiday}`}></div>
           <span>Holiday</span>
         </div>
-        <div className="legend-item-cal">
-          <div className="legend-box deadline"></div>
+        <div className={styles.legend_item_cal}>
+          <div className={`${styles.legend_box} ${styles.deadline}`}></div>
           <span>Deadline</span>
         </div>
       </div>
-
     </section>
   );
 };

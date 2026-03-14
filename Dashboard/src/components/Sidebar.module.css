@@ -1,0 +1,87 @@
+.nav{
+  width: clamp(60px,4vw,90px);
+  height: max-content;
+  position: fixed;
+  top: 160px; 
+  bottom: 20px;
+  left: 0;
+   z-index: 1; 
+}
+.nav__list {
+  position: relative;
+  background-color: var(--first-color);
+  padding-block: 100px;
+  border-radius: 0 55px 55px 0;
+  display: grid;
+  justify-content: center;
+  row-gap: 2.5rem;
+    width: 100%;
+  box-sizing: border-box;
+}
+.nav__link {
+  position: relative;
+  display: inline-flex;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background 0.4s;
+}
+.nav__link i {
+  font-size: 2rem;
+  color: var(--white-color);
+  transition: color 0.4s;
+}
+.nav__link:hover .nav__name {
+  opacity: 1;
+  transform: translateX(48px);
+}
+.nav__name {
+  position: absolute;
+  top: 0;
+  transform: translateX(56px);
+  background-color: var(--black-color);
+  color: var(--white-color);
+  font-size: var(--small-font-size);
+  font-weight: 500;
+  padding: 6px 16px;
+  border-radius: 3rem;
+  pointer-events: none;
+  transition: transform 0.5s, opacity 0.5s;
+  opacity: 0;
+}
+.nav__circle1, .nav__circle2 {
+    width: 150px;
+    height: 95px;
+  background-color: var(--body-color);
+  border-radius: 60%;
+  position: absolute;
+  left: -20px;
+  z-index: 10;
+}
+.nav__circle1 {
+  top: -86px;
+}
+.nav__circle2 {
+  bottom: -86px;
+}
+.nav__square1, .nav__square2 {
+  width: 30px;
+  height: 55px;
+  background-color: var(--first-color);
+  position: absolute;
+  left: 0;
+  z-index: 1;
+}
+.nav__square1 {
+  top: -44px;
+}
+.nav__square2 {
+  bottom: -44px;
+}
+/* Active sidebar item */
+.active_link{
+  background-color: #ffffff;
+}
+
+.active_link i{
+  color: var(--first-color) !important;
+}
