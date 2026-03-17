@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import About from "./pages/About";
 import HelpAndSupport from "./pages/HelpAndSupport";
 import Files from "./pages/Files";
+import Application from "./pages/Applications";
 
 export default function App() {
   return (
@@ -21,6 +22,7 @@ export default function App() {
             {/* Change this path to "help" to match the Account.jsx NavLink */}
             <Route path="help" element={<HelpAndSupport />} />
           </Route>
+          <Route path="applications" element={<Application />} />
           <Route path="files" element={<Files />} />
           <Route path="settings" element={<Settings />} />
         </Route>

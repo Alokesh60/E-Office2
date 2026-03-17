@@ -5,44 +5,45 @@
   /*========== Colors ==========*/
   --first-color: rgb(27, 68, 110);
   --black-color: hsl(248, 24%, 10%);
-  --white-color: #DDE7F1;
-  --body-color: #DDE7F1;
+  --white-color: #dde7f1;
+  --body-color: #dde7f1;
   /*========== Font and typography ==========*/
   --body-font: "Poppins", sans-serif;
-  --small-font-size: .813rem;
+  --small-font-size: 0.813rem;
 }
 @media screen and (min-width: 1024px) {
   :root {
-    --small-font-size: .875rem;
+    --small-font-size: 0.875rem;
   }
 }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background-color: #DDE7F1;
-    min-height: 100vh;
-    overflow-x: hidden;
+  font-family: "Roboto", sans-serif;
+  background-color: #dde7f1;
+  min-height: 100vh;
+  overflow-x: hidden;
+  zoom: 0.9;
 }
 
 .main-container {
-    width:100%;
-    min-height:100vh;
-    max-width: 100%;
-    max-height: 100%;
-    background-color: #DDE7F1;
-    display: flex;
-    position: relative;
+  width: 100%;
+  min-height: 100vh;
+  max-width: 100%;
+  max-height: 100%;
+  background-color: #dde7f1;
+  display: flex;
+  position: relative;
 }
 
-.sidebar{
-    width:80px;
-    flex-shrink:0;
+.sidebar {
+  width: 80px;
+  flex-shrink: 0;
 }
 
 ul {
@@ -66,107 +67,104 @@ main {
   color: var(--first-color);
 }
 
-.content-area{
-flex:1;
-padding:20px 40px;
-padding-top:30px;
-padding-left:40px;   /* reserve space for sidebar */
-min-height:100vh;
+.content-area {
+  flex: 1;
+  padding: 20px 40px;
+  padding-top: 30px;
+  padding-left: 40px; /* reserve space for sidebar */
+  min-height: 100vh;
 }
 /* *********************** */
-.dashboard-grid{
-display:grid;
+.dashboard-grid {
+  display: grid;
 
-grid-template-columns: 1fr .8fr 1.2fr .8fr;
+  grid-template-columns: 1fr 0.8fr 1.2fr 0.8fr;
 
-grid-template-areas:
-"profile announcement announcement stats"
-"completion announcement announcement stats"
-"calendar quick recent recent";
+  grid-template-areas:
+    "profile announcement announcement stats"
+    "completion announcement announcement stats"
+    "calendar quick recent recent";
 
-gap:35px;
+  gap: 35px;
 }
-.profile-area{
-grid-area: profile;
-}
-
-.completion-area{
-grid-area: completion;
+.profile-area {
+  grid-area: profile;
 }
 
-.announcement-area{
-grid-area: announcement;
+.completion-area {
+  grid-area: completion;
 }
 
-.stats-area{
-grid-area: stats;
+.announcement-area {
+  grid-area: announcement;
 }
 
-.calendar-area{
-grid-area: calendar;
+.stats-area {
+  grid-area: stats;
 }
 
-.quick-area{
-grid-area: quick;
+.calendar-area {
+  grid-area: calendar;
 }
 
-.recent-area{
-grid-area: recent;
+.quick-area {
+  grid-area: quick;
 }
-.dashboard-grid > *{
-width:100%;
+
+.recent-area {
+  grid-area: recent;
+}
+.dashboard-grid > * {
+  width: 100%;
 }
 
 /* ********************* */
 
 @media (max-width: 768px) {
-    .main-container {
-        flex-direction:column;
+  .main-container {
+    flex-direction: column;
+  }
 
-    }
-    
-    .sidebar {
-        width: 100%;
+  .sidebar {
+    width: 100%;
+  }
 
-    }
-    
-    .content-area {
-        margin-left: 0;
-        width: 100%;
-    }
-    .dashboard-grid{
-grid-template-columns:1fr;
-}
+  .content-area {
+    margin-left: 0;
+    width: 100%;
+  }
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
 
-    
-    .top_header {
-        position: relative;
-        top: 0;
-        left: 0;
-        right: 0;
-        flex-direction: column;
-        gap: 20px;
-        margin-bottom: 20px;
-    }
-    
-    .search_container {
-        width: 100%;
-    }
-    
-    .profile_card,
-    .progress_card,
-    .announcement_card,
-    .statistics_card,
-    .calendar_card,
-    .recent-activities-card,
-    .quick_access_card {
-        position: relative;
-        left: auto;
-        top: auto;
-        width: 100%;
-        height: auto;
-        margin-bottom: 20px;
-    }
+  .top_header {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .search_container {
+    width: 100%;
+  }
+
+  .profile_card,
+  .progress_card,
+  .announcement_card,
+  .statistics_card,
+  .calendar_card,
+  .recent-activities-card,
+  .quick_access_card {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    margin-bottom: 20px;
+  }
 }
 /* .scroll-page-active {
   overflow: hidden;
@@ -174,10 +172,10 @@ grid-template-columns:1fr;
 .files-page-active {
   overflow: hidden;
 }
-.account-page-active{
-    overflow: hidden;
+.account-page-active {
+  overflow: hidden;
 }
-.settings-page-active{
-    overflow: hidden;
+.settings-page-active {
+  overflow: hidden;
 } */
 /* Disable dashboard scaling on Account page */

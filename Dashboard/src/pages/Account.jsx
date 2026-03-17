@@ -46,8 +46,6 @@ const Account = () => {
                 </NavLink>
               </li>
 
-
-
               <li>
                 <NavLink
                   to="help"
@@ -151,7 +149,6 @@ const Account = () => {
 
             <Outlet />
           </div>
-
         </div>
       </div>
     </div>
