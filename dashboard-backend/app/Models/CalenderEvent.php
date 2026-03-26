@@ -4,13 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Announcement extends Model
+class CalendarEvent extends Model
 {
     protected $fillable = [
     'title',
-    'body',
-    'is_active',
-    'expires_at',
-    'created_by'
+    'description',
+    'type',
+    'date',
+    'user_id',
+    'application_id'
 ];
 }

@@ -4,41 +4,84 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use App\Models\Application;
+use App\Services\ApplicationStatsService;
+use App\Models\ApplicationLog;
 use App\Models\Announcement;
-use App\Models\Event;
+use App\Models\CalendarEvent;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request, ApplicationStatsService $statsService)
     {
-        $user = $request->user();
-
-        $filled = 0;
-        if ($user->name) $filled++;
-        if ($user->email) $filled++;
-        if ($user->role) $filled++;
-
-        $profileCompletion = intval(($filled / 3) * 100);
-
-        $applications = Application::where('user_id', $user->id)->get();
+        $userId = $request->user()->id;
 
         return response()->json([
-            'user' => [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email' => $user->email,
-                'role' =>   $user->role,
-                'profileCompletion' => $profileCompletion
-            ],
-            'applications' => [
-                'total' => $applications->count(),
-                'pending' => $applications->where('status', 'Pending')->count(),
-                'accepted' => $applications->where('status', 'Accepted')->count(),
-                'rejected' => $applications->where('status', 'Rejected')->count(),
-            ],
-            'announcements' => Announcement::where('active', true)->get(),
-            'calendar' => Event::all()
+            'stats' => $statsService->getUserStats($userId),
+
+            'activity' => ApplicationLog::where('actor_id', $userId)
+                ->latest()
+                ->limit(10)
+                ->get(),
+
+            'announcements' => Announcement::where('is_active', 1)
+                ->where(function ($q) {
+                    $q->whereNull('expires_at')
+                      ->orWhere('expires_at', '>', now());
+                })
+                ->latest()
+                ->limit(5)
+                ->get(),
+
+            'calendar' => CalendarEvent::where(function ($q) use ($userId) {
+                $q->whereNull('user_id')
+                  ->orWhere('user_id', $userId);
+            })
+            ->orderBy('date')
+            ->get()
         ]);
+    }
+
+    public function stats(Request $request, ApplicationStatsService $statsService)
+    {
+        return response()->json(
+            $statsService->getUserStats($request->user()->id)
+        );
+    }
+
+    public function activity(Request $request)
+    {
+        return response()->json(
+            ApplicationLog::where('actor_id', $request->user()->id)
+                ->latest()
+                ->limit(10)
+                ->get()
+        );
+    }
+
+    public function announcements()
+    {
+        return response()->json(
+            Announcement::where('is_active', 1)
+                ->where(function ($q) {
+                    $q->whereNull('expires_at')
+                      ->orWhere('expires_at', '>', now());
+                })
+                ->latest()
+                ->get()
+        );
+    }
+
+    public function calendar(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        return response()->json(
+            CalendarEvent::where(function ($q) use ($userId) {
+                $q->whereNull('user_id')
+                  ->orWhere('user_id', $userId);
+            })
+            ->orderBy('date')
+            ->get()
+        );
     }
 }

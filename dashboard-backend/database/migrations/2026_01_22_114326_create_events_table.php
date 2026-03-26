@@ -10,15 +10,32 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
-    {
-        Schema::create('events', function (Blueprint $table) {
-            $table->id();
-            $table->string('title');
-            $table->enum('type', ['Holiday', 'Deadline', 'Event']);
-            $table->date('event_date');
-            $table->timestamps();
-        });
-    }
+{
+    Schema::create('calendar_events', function (Blueprint $table) {
+
+        $table->id();
+
+        $table->string('title');
+
+        $table->text('description')->nullable();
+
+        $table->enum('type', ['holiday', 'deadline', 'event']);
+
+        $table->date('date');
+
+        $table->foreignId('user_id')
+              ->nullable()
+              ->constrained()
+              ->nullOnDelete();
+
+        $table->foreignId('application_id')
+              ->nullable()
+              ->constrained('applications')
+              ->cascadeOnDelete();
+
+        $table->timestamps();
+    });
+}
 
     /**
      * Reverse the migrations.
