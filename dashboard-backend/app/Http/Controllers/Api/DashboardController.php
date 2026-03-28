@@ -8,12 +8,41 @@ use App\Services\ApplicationStatsService;
 use App\Models\ApplicationLog;
 use App\Models\Announcement;
 use App\Models\CalendarEvent;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
     public function index(Request $request, ApplicationStatsService $statsService)
     {
         $userId = $request->user()->id;
+
+        // fetch holidays from calender api
+        $holidays = Cache::remember('holidays_' . now()->year, 86400, function () {
+
+            $response = Http::get("https://date.nager.at/api/v3/PublicHolidays/" . now()->year . "/IN");
+
+            if (!$response->successful()) return collect([]);
+
+            return collect($response->json())->map(function ($h) {
+                return [
+                    'title' => $h['localName'],
+                    'date' => $h['date'],
+                    'type' => 'holiday'
+                ];
+            });
+        });
+
+        // fetch calender events from db
+        $events = CalendarEvent::where(function ($q) use ($userId) {
+            $q->whereNull('user_id')
+              ->orWhere('user_id', $userId);
+        })->get();
+
+        
+        $calendar = $events->merge($holidays)
+                           ->sortBy('date')
+                           ->values();
 
         return response()->json([
             'stats' => $statsService->getUserStats($userId),
@@ -32,14 +61,11 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get(),
 
-            'calendar' => CalendarEvent::where(function ($q) use ($userId) {
-                $q->whereNull('user_id')
-                  ->orWhere('user_id', $userId);
-            })
-            ->orderBy('date')
-            ->get()
+            'calendar' => $calendar
         ]);
     }
+
+    
 
     public function stats(Request $request, ApplicationStatsService $statsService)
     {
@@ -75,13 +101,11 @@ class DashboardController extends Controller
     {
         $userId = $request->user()->id;
 
-        return response()->json(
-            CalendarEvent::where(function ($q) use ($userId) {
-                $q->whereNull('user_id')
-                  ->orWhere('user_id', $userId);
-            })
-            ->orderBy('date')
-            ->get()
-        );
+        $events = CalendarEvent::where(function ($q) use ($userId) {
+            $q->whereNull('user_id')
+              ->orWhere('user_id', $userId);
+        })->get();
+
+        return response()->json($events);
     }
 }
