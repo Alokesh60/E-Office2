@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
 import styles from "./Application.module.css";
 
 const FORM_TEMPLATES = [
