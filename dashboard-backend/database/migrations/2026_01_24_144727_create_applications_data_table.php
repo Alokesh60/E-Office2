@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('application_data', function (Blueprint $table) {
             $table->id();
             $table->foreignId('application_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('field_id')->constrained('form-fields');
+            $table->foreignId('field_id')->constrained('form_fields');
             $table->longText('value')->nullable();
         });
     }
