@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from "./FacultyApplication.module.css";
+import toast from "react-hot-toast";
 
 const FacultyApplication = () => {
   const [activeTab, setActiveTab] = useState("forward");
@@ -24,7 +25,7 @@ const FacultyApplication = () => {
 
   const handleVerify = () => {
     if (otp.length !== 6) {
-      alert("Enter valid 6-digit OTP");
+      toast.error("Enter valid 6-digit OTP");
       return;
     }
 
@@ -43,10 +44,8 @@ const FacultyApplication = () => {
     <div className={styles.pageWrapper}>
       <div className={styles.mainContainer}>
         <div className={styles.content}>
-          
           {/* LEFT SIDE */}
           <div className={styles.left}>
-            
             {/* HEADER */}
             <div className={styles.header}>
               <p className={styles.breadcrumb}>
@@ -111,9 +110,7 @@ const FacultyApplication = () => {
 
                   <div className={styles.docGroup}>
                     <p className={styles.docTitle}>Identity Proof</p>
-                    <div className={styles.docItem}>
-                      📄 passport_copy.pdf
-                    </div>
+                    <div className={styles.docItem}>📄 passport_copy.pdf</div>
                   </div>
                 </div>
               </div>
@@ -202,17 +199,15 @@ const FacultyApplication = () => {
                         index < currentStage
                           ? styles.done
                           : index === currentStage
-                          ? styles.current
-                          : styles.pending
+                            ? styles.current
+                            : styles.pending
                       }`}
                     ></div>
 
                     <div className={styles.stepText}>
                       {step}
                       {index === currentStage && (
-                        <span className={styles.currentLabel}>
-                          (Current)
-                        </span>
+                        <span className={styles.currentLabel}>(Current)</span>
                       )}
                     </div>
                   </div>

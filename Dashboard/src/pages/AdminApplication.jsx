@@ -1,64 +1,31 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./Application.module.css";
+import toast from "react-hot-toast";
 
-const FORM_TEMPLATES = [
-  {
-    id: 1,
-    title: "Bonafide Certificate",
-    icon: "ri-file-user-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 2,
-    title: "Transcript Request",
-    icon: "ri-file-search-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 3,
-    title: "Leave Application",
-    icon: "ri-time-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 4,
-    title: "NOC Request",
-    icon: "ri-chat-check-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 5,
-    title: "Fee Concession",
-    icon: "ri-money-dollar-circle-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 6,
-    title: "ID Card Renewal",
-    icon: "ri-bank-card-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 7,
-    title: "Library Access Form",
-    icon: "ri-book-open-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-  {
-    id: 8,
-    title: "Certificate Request",
-    icon: "ri-medal-line",
-    color: "var(--first-color)",
-    fields: 0,
-  },
-];
+const mapBackendType = (type) => {
+  switch (type) {
+    case "text":
+      return "short";
+    case "textarea":
+      return "para";
+    case "email":
+      return "email";
+    case "number":
+      return "number";
+    case "date":
+      return "date";
+    case "dropdown":
+      return "dropdown";
+    case "radio":
+      return "radio";
+    case "checkbox":
+      return "checkbox";
+    case "file":
+      return "file";
+    default:
+      return "short";
+  }
+};
 
 const FIELD_TYPES = {
   short: { label: "Short answer", icon: "Aa" },
@@ -86,18 +53,68 @@ function makeField(type) {
 
 // ─── AdminApplication ────────────────────────────────────────────────────────
 const AdminApplication = () => {
-  const [forms, setForms] = useState(FORM_TEMPLATES);
+  const [forms, setForms] = useState([]);
   const [activeForm, setActiveForm] = useState(null); // which card's modal is open
   const [fields, setFields] = useState([]);
   const [activeFieldId, setActiveFieldId] = useState(null);
   const [formDesc, setFormDesc] = useState("");
   const [toast, setToast] = useState("");
+  const [deleteTarget, setDeleteTarget] = useState(null);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    loadForms();
+  }, []);
+
+  const loadForms = async () => {
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/forms");
+      const data = await res.json();
+
+      const formatted = data.map((f) => ({
+        id: f.id,
+        backendId: f.id,
+        title: f.name,
+        icon: "ri-file-line",
+        color: "var(--first-color)",
+        fields: f.fields ? f.fields.length : 0,
+        rawFields: f.fields,
+        isNew: false,
+      }));
+
+      setForms(
+        data.map((f) => ({
+          id: f.id,
+          title: f.name,
+          description: f.description,
+          rawFields: f.fields,
+          backendId: f.id,
+        })),
+      );
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   // open builder for a form card
   const openBuilder = (form) => {
     setActiveForm(form);
-    setFields([]);
-    setFormDesc("");
+
+    if (form.rawFields && form.rawFields.length > 0) {
+      const mappedFields = form.rawFields.map((f, index) => ({
+        id: `f_${f.id}`,
+        type: mapBackendType(f.field_type),
+        label: f.label,
+        required: f.required,
+        options: f.options || ["Option 1", "Option 2"],
+      }));
+
+      setFields(mappedFields);
+    } else {
+      setFields([]);
+    }
+
+    setFormDesc(form.description || "");
     setActiveFieldId(null);
   };
 
@@ -105,13 +122,22 @@ const AdminApplication = () => {
 
   // ── form management ─────────────────────────────────────────────────────────
   const deleteForm = (formId, formTitle) => {
-    if (
-      window.confirm(
-        `Are you sure you want to permanently delete "${formTitle}"?`,
-      )
-    ) {
-      setForms(forms.filter((f) => f.id !== formId));
-      showToast(`Deleted form: ${formTitle}`);
+    setDeleteTarget({ id: formId, title: formTitle });
+  };
+
+  const confirmDelete = async () => {
+    try {
+      await fetch(`http://127.0.0.1:8000/api/forms/${deleteTarget.id}`, {
+        method: "DELETE",
+      });
+
+      await loadForms();
+
+      showToast(`Deleted "${deleteTarget.title}"`);
+      setDeleteTarget(null);
+    } catch (err) {
+      console.error(err);
+      toast.error("Error deleting form");
     }
   };
 
@@ -176,16 +202,132 @@ const AdminApplication = () => {
       ),
     );
 
+  const mapType = (type) => {
+    switch (type) {
+      case "short":
+        return "text";
+      case "para":
+        return "textarea";
+      case "email":
+        return "email";
+      case "number":
+        return "number";
+      case "date":
+        return "date";
+      case "dropdown":
+        return "dropdown";
+      case "radio":
+        return "radio";
+      case "checkbox":
+        return "checkbox";
+      case "file":
+        return "file";
+      default:
+        return "text";
+    }
+  };
+
   // ── save ────────────────────────────────────────────────────────────────────
-  const saveForm = () => {
-    // update the field count on the card
-    setForms((prev) =>
-      prev.map((f) =>
-        f.id === activeForm.id ? { ...f, fields: fields.length } : f,
-      ),
-    );
-    showToast(`"${activeForm.title}" saved (${fields.length} questions)`);
-    closeBuilder();
+  const saveForm = async () => {
+    if (saving) return;
+    setSaving(true);
+
+    try {
+      console.log("Saving started..");
+
+      let formId;
+
+      if (!activeForm.isNew && !isNaN(activeForm.backendId)) {
+        console.log("Updating form..");
+
+        // updating existing form in backend
+        const formRes = await fetch(
+          `http://127.0.0.1:8000/api/forms/${activeForm.backendId}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+            body: JSON.stringify({
+              name: activeForm.title,
+              description: formDesc,
+            }),
+          },
+        );
+
+        const data = await formRes.json();
+        console.log("Update Response: ", data);
+
+        formId = activeForm.backendId;
+      } else {
+        console.log("Creating form..");
+
+        const formRes = await fetch("http://127.0.0.1:8000/api/forms", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            name: activeForm.title,
+            description: formDesc,
+            created_by: 1, // hardcoded user ID for now
+          }),
+        });
+
+        const data = await formRes.json();
+        console.log("Create response:", data);
+
+        formId = data.id;
+      }
+
+      if (!activeForm.isNew && !isNaN(activeForm.backendId)) {
+        console.log("Deleting existing fields..");
+
+        const delRes = await fetch(
+          `http://127.0.0.1:8000/api/forms/${activeForm.backendId}/fields`,
+          {
+            method: "DELETE",
+          },
+        );
+
+        console.log("Delete response status", delRes.status);
+      }
+
+      const fieldPromises = fields.map((f, index) => {
+        return fetch("http://127.0.0.1:8000/api/form-fields", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            form_id: formId,
+            label: f.label || `Question ${index + 1}`,
+            field_name: `field_${index + 1}`,
+            field_type: mapType(f.type),
+            required: f.required,
+            options: ["dropdown", "radio", "checkbox"].includes(f.type)
+              ? f.options
+              : null,
+            field_order: index,
+          }),
+        });
+      });
+
+      await Promise.all(fieldPromises);
+
+      showToast("Form saved successfully!");
+
+      await loadForms();
+      closeBuilder();
+    } catch (err) {
+      console.error(err);
+      toast.error("Error saving form");
+    } finally {
+      setSaving(false);
+    }
   };
 
   const showToast = (msg) => {
@@ -229,20 +371,18 @@ const AdminApplication = () => {
                 border: "1px solid var(--first-color)",
               }}
               onClick={() => {
-                const title = window.prompt(
-                  "Enter the name of the new form (e.g., Scholarship Form):",
-                );
-                if (title && title.trim()) {
-                  const newForm = {
-                    id: Date.now(), // generate a unique ID
-                    title: title.trim(),
-                    icon: "ri-file-add-line", // default generic icon
-                    color: "var(--first-color)",
-                    fields: 0,
-                  };
-                  setForms([...forms, newForm]);
-                  showToast(`Added new form: ${title}`);
-                }
+                const newForm = {
+                  id: Date.now(),
+                  title: "Untitled Form",
+                  icon: "ri-file-add-line",
+                  color: "var(--first-color)",
+                  fields: 0,
+                  isNew: true, // flag to indicate this form hasn't been saved to backend yet
+                };
+
+                setForms([...forms, newForm]);
+
+                openBuilder(newForm);
               }}
             >
               <i className="ri-add-circle-line"></i> Add New Form
@@ -273,7 +413,7 @@ const AdminApplication = () => {
                 title="Delete Form"
                 onClick={(e) => {
                   e.stopPropagation();
-                  deleteForm(form.id, form.title);
+                  setDeleteTarget({ id: form.id, title: form.title });
                 }}
               >
                 <i className="ri-delete-bin-line"></i>
@@ -290,8 +430,8 @@ const AdminApplication = () => {
                   {/* Added padding right so long titles don't overlap the delete icon */}
                   <h3 style={{ paddingRight: "24px" }}>{form.title}</h3>
                   <p>
-                    {form.fields > 0
-                      ? `${form.fields} question${form.fields !== 1 ? "s" : ""} configured`
+                    {form.rawFields?.length > 0
+                      ? `${form.rawFields.length} question${form.rawFields.length !== 1 ? "s" : ""} configured`
                       : "No questions yet — click to build"}
                   </p>
                 </div>
@@ -332,7 +472,19 @@ const AdminApplication = () => {
                 <i className={activeForm.icon}></i>
               </div>
               <div>
-                <h3>{activeForm.title}</h3>
+                <input
+                  value={activeForm.title}
+                  onChange={(e) =>
+                    setActiveForm({ ...activeForm, title: e.target.value })
+                  }
+                  style={{
+                    fontSize: "18px",
+                    fontWeight: "600",
+                    border: "none",
+                    outline: "none",
+                    background: "transparent",
+                  }}
+                />
                 <p>Form Builder — Admin</p>
               </div>
               <button className={styles.closeBtn} onClick={closeBuilder}>
@@ -428,10 +580,13 @@ const AdminApplication = () => {
               >
                 {fields.length} question{fields.length !== 1 ? "s" : ""}
               </span>
-              <button className={styles.cancelBtn} onClick={closeBuilder}>
-                Discard
-              </button>
-              <button className={styles.submitBtn} onClick={saveForm}>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => {
+                  console.log("SAVE CLCIKED");
+                  saveForm();
+                }}
+              >
                 <i className="ri-save-line"></i> Save Form
               </button>
             </div>
@@ -441,6 +596,48 @@ const AdminApplication = () => {
 
       {/* toast */}
       {toast && <div style={toastStyle}>{toast}</div>}
+
+      {/* 🔥 DELETE CONFIRM MODAL */}
+      {deleteTarget && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setDeleteTarget(null)}
+        >
+          <div
+            className={styles.modal}
+            style={{ maxWidth: 400 }}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <h3>Delete Form</h3>
+            </div>
+
+            <div style={{ padding: "16px" }}>
+              <p>
+                Are you sure you want to delete{" "}
+                <strong>{deleteTarget.title}</strong>?
+              </p>
+            </div>
+
+            <div className={styles.modalFooter}>
+              <button
+                className={styles.cancelBtn}
+                onClick={() => setDeleteTarget(null)}
+              >
+                Cancel
+              </button>
+
+              <button
+                className={styles.submitBtn}
+                style={{ background: "#c62828" }}
+                onClick={confirmDelete}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

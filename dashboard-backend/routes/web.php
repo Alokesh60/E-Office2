@@ -7,5 +7,6 @@ Route::get('/', function () {
     return ['Laravel' => app()->version()];
 });
 Route::get('/form/{id}', [FormController::class, 'show']);
+Route::get('/form/{id}/responses', [FormController::class, 'responses']);
 
 require __DIR__ . '/auth.php';

@@ -13,7 +13,6 @@ class FormField extends Model
     'field_type',
     'required',
     'options',
-    'validation',
     'field_order'
   ];
 
