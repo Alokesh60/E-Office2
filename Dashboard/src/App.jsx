@@ -16,7 +16,7 @@ import FormFill from "./pages/FormFill";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
-  const role = "faculty"; // change dynamically later
+  const role = "admin"; // change dynamically later
 
   return (
     <BrowserRouter>
