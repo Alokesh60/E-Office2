@@ -13,10 +13,11 @@ import AdminApplication from "./pages/AdminApplication";
 import FacultyApplication from "./pages/FacultyApplication"; //
 import Submissions from "./pages/Submissions";
 import FormFill from "./pages/FormFill";
+import StudentSubmissions from "./pages/StudentSubmissions";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
-  const role = "admin"; // change dynamically later
+  const role = "stf"; // change dynamically later
 
   return (
     <BrowserRouter>
@@ -58,6 +59,7 @@ export default function App() {
               )
             }
           />
+          <Route path="student-submissions" element={<StudentSubmissions />} />
 
           <Route path="files" element={<Files />} />
           <Route path="settings" element={<Settings />} />
