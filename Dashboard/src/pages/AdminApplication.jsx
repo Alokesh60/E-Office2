@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "./Application.module.css";
-import { toast } from "react-hot-toast";
+import styles from "./AdminApplication.module.css";
 
 const availableRoles = [
   "director",
@@ -89,6 +88,7 @@ function makeField(type) {
 const AdminApplication = () => {
   const [forms, setForms] = useState([]);
   const [activeForm, setActiveForm] = useState(null);
+  const [activeTab, setActiveTab] = useState("builder"); // "builder" or "workflow"
   const [fields, setFields] = useState([]);
   const [activeFieldId, setActiveFieldId] = useState(null);
   const [formDesc, setFormDesc] = useState("");
@@ -121,8 +121,8 @@ const AdminApplication = () => {
           description: f.description,
           rawFields: f.fields,
           backendId: f.id,
-          icon: "ri-file-line",
-          color: "var(--first-color)",
+          icon: "ri-file-list-3-line",
+          color: "#2563eb", // Using a solid primary color for all cards to match the new UI
         })),
       );
     } catch (err) {
@@ -132,6 +132,7 @@ const AdminApplication = () => {
 
   const openBuilder = (form) => {
     setActiveForm(form);
+    setActiveTab("builder");
     if (form.rawFields && form.rawFields.length > 0) {
       const mappedFields = form.rawFields.map((f) => ({
         id: `f_${f.id}`,
@@ -160,7 +161,7 @@ const AdminApplication = () => {
       setDeleteTarget(null);
     } catch (err) {
       console.error(err);
-      toast.error("Error deleting form");
+      showToast("Error deleting form");
     }
   };
 
@@ -318,7 +319,7 @@ const AdminApplication = () => {
       closeBuilder();
     } catch (err) {
       console.error(err);
-      toast.error("Error saving form");
+      showToast("Error saving form");
     } finally {
       setSaving(false);
     }
@@ -338,7 +339,7 @@ const AdminApplication = () => {
           <div
             className={styles.card}
             style={{
-              border: "2px dashed #c0d0e0",
+              border: "2px dashed #cbd5e1",
               background: "transparent",
               boxShadow: "none",
             }}
@@ -346,28 +347,23 @@ const AdminApplication = () => {
             <div className={styles.cardTop}>
               <div
                 className={styles.iconBox}
-                style={{ backgroundColor: "#8a9ab0" }}
+                style={{ backgroundColor: "#94a3b8" }}
               >
                 <i className="ri-add-line"></i>
               </div>
               <div className={styles.cardText}>
-                <h3 style={{ color: "#5a6a7a" }}>Create Custom Form</h3>
-                <p>Add a new application</p>
+                <h3 style={{ color: "#64748b" }}>Create Custom Form</h3>
+                <p>Build a new application from scratch</p>
               </div>
             </div>
             <button
               className={styles.fillBtn}
-              style={{
-                background: "#fff",
-                color: "var(--first-color)",
-                border: "1px solid var(--first-color)",
-              }}
               onClick={() => {
                 const newForm = {
                   id: Date.now(),
                   title: "Untitled Form",
                   icon: "ri-file-add-line",
-                  color: "var(--first-color)",
+                  color: "#2563eb",
                   fields: 0,
                   isNew: true,
                 };
@@ -375,29 +371,14 @@ const AdminApplication = () => {
                 openBuilder(newForm);
               }}
             >
-              <i className="ri-add-circle-line"></i> Add New Form
+              <i className="ri-add-circle-line"></i> Start New Form
             </button>
           </div>
 
           {forms.map((form) => (
-            <div
-              key={form.id}
-              className={styles.card}
-              style={{ position: "relative" }}
-            >
+            <div key={form.id} className={styles.card}>
               <button
-                style={{
-                  position: "absolute",
-                  top: "14px",
-                  right: "14px",
-                  background: "transparent",
-                  border: "none",
-                  color: "#c62828",
-                  cursor: "pointer",
-                  fontSize: "18px",
-                  padding: "4px",
-                  zIndex: 2,
-                }}
+                className={styles.deleteBtn}
                 title="Delete Form"
                 onClick={(e) => {
                   e.stopPropagation();
@@ -414,11 +395,11 @@ const AdminApplication = () => {
                   <i className={form.icon}></i>
                 </div>
                 <div className={styles.cardText}>
-                  <h3 style={{ paddingRight: "24px" }}>{form.title}</h3>
+                  <h3>{form.title}</h3>
                   <p>
                     {form.rawFields?.length > 0
-                      ? `${form.rawFields.length} question${form.rawFields.length !== 1 ? "s" : ""} configured`
-                      : "No questions yet — click to build"}
+                      ? `${form.rawFields.length} configured fields`
+                      : "No questions configured yet"}
                   </p>
                 </div>
               </div>
@@ -426,239 +407,239 @@ const AdminApplication = () => {
                 className={styles.fillBtn}
                 onClick={() => openBuilder(form)}
               >
-                <i className="ri-tools-line"></i> Build Form
+                <i className="ri-settings-4-line"></i> Configure Form
               </button>
             </div>
           ))}
         </div>
       </div>
 
-      {/* form builder modal */}
+      {/* Modern Form Builder Modal */}
       {activeForm && (
         <div className={styles.modalOverlay} onClick={closeBuilder}>
-          <div
-            className={styles.modal}
-            onClick={(e) => e.stopPropagation()}
-            style={{
-              maxWidth: 860,
-              width: "95vw",
-              maxHeight: "92vh",
-              display: "flex",
-              flexDirection: "column",
-            }}
-          >
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
+            {/* Modal Header */}
             <div className={styles.modalHeader}>
-              <div
-                className={styles.modalIcon}
-                style={{ backgroundColor: activeForm.color }}
-              >
-                <i className={activeForm.icon}></i>
+              <div className={styles.headerLeft}>
+                <div
+                  className={styles.headerIcon}
+                  style={{ backgroundColor: activeForm.color }}
+                >
+                  <i className={activeForm.icon}></i>
+                </div>
+                <div style={{ flex: 1 }}>
+                  <input
+                    className={styles.titleInput}
+                    value={activeForm.title}
+                    placeholder="Enter form title..."
+                    onChange={(e) =>
+                      setActiveForm({ ...activeForm, title: e.target.value })
+                    }
+                  />
+                  <textarea
+                    className={styles.descInput}
+                    value={formDesc}
+                    onChange={(e) => setFormDesc(e.target.value)}
+                    placeholder="Provide instructions or context for students applying to this form..."
+                    rows={1}
+                  />
+                </div>
               </div>
-              <div>
-                <input
-                  value={activeForm.title}
-                  onChange={(e) =>
-                    setActiveForm({ ...activeForm, title: e.target.value })
-                  }
-                  style={{
-                    fontSize: "18px",
-                    fontWeight: "600",
-                    border: "none",
-                    outline: "none",
-                    background: "transparent",
-                  }}
-                />
-                <p>Form Builder — Admin</p>
+              <div className={styles.headerActions}>
+                <button className={styles.closeBtn} onClick={closeBuilder}>
+                  <i className="ri-close-line"></i>
+                </button>
+                <button className={styles.saveBtn} onClick={() => saveForm()}>
+                  <i className="ri-save-line"></i>{" "}
+                  {saving ? "Saving..." : "Save Configuration"}
+                </button>
               </div>
-              <button className={styles.closeBtn} onClick={closeBuilder}>
-                <i className="ri-close-line"></i>
-              </button>
             </div>
 
-            <div
-              style={{
-                display: "flex",
-                flex: 1,
-                overflow: "hidden",
-                borderTop: "1px solid var(--border-color, #e0eaf4)",
-              }}
-            >
-              <FieldPalette onAdd={addField} />
-
+            {/* Tabs Navigation */}
+            <div className={styles.tabsContainer}>
               <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  padding: "18px 22px",
-                  background: "var(--body-color, #f4f6fb)",
-                }}
+                className={`${styles.tab} ${activeTab === "builder" ? styles.activeTab : ""}`}
+                onClick={() => setActiveTab("builder")}
               >
-                <div style={canvasCardStyle}>
-                  <div
-                    style={{
-                      height: 6,
-                      background: "var(--first-color)",
-                      borderRadius: "8px 8px 0 0",
-                      margin: "-1px -1px 0",
-                    }}
-                  />
-                  <div style={{ padding: "16px 18px" }}>
-                    <p
+                <i className="ri-file-list-2-line"></i> Form Builder
+              </div>
+              <div
+                className={`${styles.tab} ${activeTab === "workflow" ? styles.activeTab : ""}`}
+                onClick={() => setActiveTab("workflow")}
+              >
+                <i className="ri-flow-chart"></i> Approval Workflow
+              </div>
+            </div>
+
+            {/* Modal Body / Tab Content */}
+            <div className={styles.modalBody}>
+              {/* TAB 1: FORM BUILDER */}
+              {activeTab === "builder" && (
+                <>
+                  <FieldPalette onAdd={addField} />
+                  <div className={styles.canvas}>
+                    <div className={styles.canvasInner}>
+                      {fields.length === 0 ? (
+                        <EmptyCanvas onAdd={addField} />
+                      ) : (
+                        fields.map((f, i) => (
+                          <FieldCard
+                            key={f.id}
+                            field={f}
+                            index={i}
+                            active={f.id === activeFieldId}
+                            onSelect={() =>
+                              setActiveFieldId(
+                                f.id === activeFieldId ? null : f.id,
+                              )
+                            }
+                            onDelete={() => delField(f.id)}
+                            onDuplicate={() => dupField(f.id)}
+                            onUpdate={(patch) => updateField(f.id, patch)}
+                            onUpdateOption={(idx, val) =>
+                              updateOption(f.id, idx, val)
+                            }
+                            onAddOption={() => addOption(f.id)}
+                            onRemoveOption={(idx) => removeOption(f.id, idx)}
+                          />
+                        ))
+                      )}
+                    </div>
+                  </div>
+                </>
+              )}
+
+              {/* TAB 2: WORKFLOW */}
+              {activeTab === "workflow" && (
+                <div className={styles.workflowTab}>
+                  {/* Roles Sidebar */}
+                  <div className={styles.workflowSidebar}>
+                    <div className={styles.workflowSidebarHeader}>
+                      <h3 style={{ fontSize: "1.1rem", color: "#0f172a" }}>
+                        Available Roles
+                      </h3>
+                      <p
+                        style={{
+                          fontSize: "0.85rem",
+                          color: "#64748b",
+                          marginTop: 4,
+                        }}
+                      >
+                        Select roles to add to the approval chain.
+                      </p>
+                      <input
+                        className={styles.workflowSearch}
+                        type="text"
+                        placeholder="Search roles..."
+                        value={roleSearch}
+                        onChange={(e) => setRoleSearch(e.target.value)}
+                      />
+                    </div>
+                    <div className={styles.roleList}>
+                      {filteredRoles.length === 0 ? (
+                        <p
+                          style={{
+                            textAlign: "center",
+                            color: "#94a3b8",
+                            padding: "20px 0",
+                          }}
+                        >
+                          No roles found
+                        </p>
+                      ) : (
+                        filteredRoles.map((role) => {
+                          const isAdded = workflow.includes(role);
+                          return (
+                            <div
+                              key={role}
+                              className={`${styles.roleItem} ${isAdded ? styles.roleAdded : ""}`}
+                              onClick={() =>
+                                !isAdded && addRoleToWorkflow(role)
+                              }
+                            >
+                              <span>
+                                {role
+                                  .replace(/_/g, " ")
+                                  .replace(/\b\w/g, (l) => l.toUpperCase())}
+                              </span>
+                              {isAdded ? (
+                                <i className="ri-check-line"></i>
+                              ) : (
+                                <i className="ri-add-line"></i>
+                              )}
+                            </div>
+                          );
+                        })
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Workflow Sequence Canvas */}
+                  <div className={styles.workflowCanvas}>
+                    <h2
                       style={{
-                        fontSize: 11,
-                        fontWeight: 700,
-                        color: "#8a9ab0",
-                        textTransform: "uppercase",
-                        letterSpacing: ".5px",
-                        marginBottom: 6,
+                        fontSize: "1.4rem",
+                        color: "#0f172a",
+                        marginBottom: 8,
                       }}
                     >
-                      Form description
+                      Approval Sequence
+                    </h2>
+                    <p style={{ color: "#64748b", fontSize: "0.95rem" }}>
+                      Forms will be routed to these authorities in the exact
+                      order shown below.
                     </p>
-                    <textarea
-                      style={descStyle}
-                      value={formDesc}
-                      onChange={(e) => setFormDesc(e.target.value)}
-                      placeholder="Instructions or context shown to students…"
-                      rows={2}
-                    />
-                  </div>
-                </div>
 
-                <div
-                  style={{
-                    background: "#ffffff",
-                    border: "1px solid #d8e4f0",
-                    borderRadius: "12px",
-                    marginBottom: 14,
-                    padding: 12,
-                  }}
-                >
-                  <p style={{ margin: "0 0 8px", fontWeight: 600 }}>
-                    Approval Workflow
-                  </p>
-                  <input
-                    type="text"
-                    placeholder="Search roles..."
-                    value={roleSearch}
-                    onChange={(e) => setRoleSearch(e.target.value)}
-                    style={{
-                      width: "100%",
-                      padding: "8px 10px",
-                      marginBottom: 10,
-                      borderRadius: 6,
-                      border: "1px solid #c7d3e0",
-                    }}
-                  />
-                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
-                    {filteredRoles.length === 0 ? (
-                      <small style={{ color: "#777" }}>No roles found</small>
-                    ) : (
-                      filteredRoles.map((role) => (
-                        <button
-                          key={role}
-                          type="button"
-                          style={{
-                            border: "1px solid #c0d0e0",
-                            background: workflow.includes(role)
-                              ? "#e6f0ff"
-                              : "#fff",
-                            color: "#2e3a59",
-                            borderRadius: 6,
-                            padding: "6px 10px",
-                            cursor: workflow.includes(role)
-                              ? "not-allowed"
-                              : "pointer",
-                          }}
-                          onClick={() => addRoleToWorkflow(role)}
-                          disabled={workflow.includes(role)}
-                        >
-                          {role.replace(/_/g, " ")}
-                        </button>
-                      ))
-                    )}
-                  </div>
-                  <div style={{ marginTop: 10, minHeight: 28 }}>
                     {workflow.length === 0 ? (
-                      <small>No roles selected</small>
-                    ) : (
-                      workflow.map((role, idx) => (
-                        <span
-                          key={role}
+                      <div className={styles.workflowEmpty}>
+                        <i
+                          className="ri-route-line"
                           style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: 4,
-                            marginRight: 6,
-                            background: "#f1f5ff",
-                            border: "1px solid #ccd9f0",
-                            borderRadius: 999,
-                            padding: "4px 8px",
-                            fontSize: 12,
+                            fontSize: "3rem",
+                            color: "#cbd5e1",
+                            marginBottom: 16,
+                            display: "block",
                           }}
-                        >
-                          <span>{role.replace(/_/g, " ")}</span>
-                          <button
-                            type="button"
-                            style={{
-                              border: "none",
-                              background: "transparent",
-                              color: "#a33",
-                              cursor: "pointer",
-                              padding: 0,
-                            }}
-                            onClick={() => removeRoleFromWorkflow(role)}
-                          >
-                            ❌
-                          </button>
-                          {idx < workflow.length - 1 && <span>→</span>}
-                        </span>
-                      ))
+                        ></i>
+                        <h3>No approval workflow defined</h3>
+                        <p style={{ marginTop: 8 }}>
+                          Click roles on the left to build the approval
+                          sequence.
+                        </p>
+                      </div>
+                    ) : (
+                      <div className={styles.workflowSequence}>
+                        {workflow.map((role, idx) => (
+                          <React.Fragment key={role}>
+                            <div className={styles.workflowStep}>
+                              <div className={styles.stepNumber}>{idx + 1}</div>
+                              <div className={styles.stepName}>
+                                {role.replace(/_/g, " ")}
+                              </div>
+                              <button
+                                className={styles.stepRemove}
+                                onClick={() => removeRoleFromWorkflow(role)}
+                              >
+                                <i className="ri-close-circle-line"></i>
+                              </button>
+                            </div>
+                            {idx < workflow.length - 1 && (
+                              <div className={styles.stepConnector}></div>
+                            )}
+                          </React.Fragment>
+                        ))}
+                      </div>
                     )}
                   </div>
                 </div>
-
-                {fields.length === 0 ? (
-                  <EmptyCanvas onAdd={addField} />
-                ) : (
-                  fields.map((f, i) => (
-                    <FieldCard
-                      key={f.id}
-                      field={f}
-                      index={i}
-                      active={f.id === activeFieldId}
-                      onSelect={() =>
-                        setActiveFieldId(f.id === activeFieldId ? null : f.id)
-                      }
-                      onDelete={() => delField(f.id)}
-                      onDuplicate={() => dupField(f.id)}
-                      onUpdate={(patch) => updateField(f.id, patch)}
-                      onUpdateOption={(idx, val) =>
-                        updateOption(f.id, idx, val)
-                      }
-                      onAddOption={() => addOption(f.id)}
-                      onRemoveOption={(idx) => removeOption(f.id, idx)}
-                    />
-                  ))
-                )}
-              </div>
-            </div>
-
-            <div className={styles.modalFooter}>
-              <span
-                style={{ fontSize: 12, color: "#8a9ab0", marginRight: "auto" }}
-              >
-                {fields.length} question{fields.length !== 1 ? "s" : ""}
-              </span>
-              <button className={styles.cancelBtn} onClick={() => saveForm()}>
-                <i className="ri-save-line"></i> Save Form
-              </button>
+              )}
             </div>
           </div>
         </div>
       )}
 
-      {toastMsg && <div style={toastStyle}>{toastMsg}</div>}
+      {toastMsg && <div className={styles.toastMsg}>{toastMsg}</div>}
 
       {/* DELETE CONFIRM MODAL */}
       {deleteTarget && (
@@ -668,31 +649,42 @@ const AdminApplication = () => {
         >
           <div
             className={styles.modal}
-            style={{ maxWidth: 400 }}
+            style={{ maxWidth: 450, height: "auto" }}
             onClick={(e) => e.stopPropagation()}
           >
-            <div className={styles.modalHeader}>
-              <h3>Delete Form</h3>
+            <div className={styles.modalHeader} style={{ padding: "24px" }}>
+              <h3 style={{ fontSize: 20 }}>Confirm Deletion</h3>
             </div>
-            <div style={{ padding: "16px" }}>
+            <div style={{ padding: "24px", fontSize: 16, flex: 1 }}>
               <p>
-                Are you sure you want to delete{" "}
-                <strong>{deleteTarget.title}</strong>?
+                Are you sure you want to permanently delete{" "}
+                <strong>{deleteTarget.title}</strong>? This action cannot be
+                undone.
               </p>
             </div>
-            <div className={styles.modalFooter}>
+            <div
+              className={styles.modalHeader}
+              style={{
+                padding: "20px 24px",
+                justifyContent: "flex-end",
+                gap: 12,
+                borderTop: "1px solid #e2e8f0",
+                borderBottom: "none",
+              }}
+            >
               <button
-                className={styles.cancelBtn}
+                className={styles.closeBtn}
+                style={{ width: "auto", padding: "0 20px" }}
                 onClick={() => setDeleteTarget(null)}
               >
                 Cancel
               </button>
               <button
-                className={styles.submitBtn}
-                style={{ background: "#c62828" }}
+                className={styles.saveBtn}
+                style={{ background: "#ef4444" }}
                 onClick={confirmDelete}
               >
-                Delete
+                Delete Form
               </button>
             </div>
           </div>
@@ -704,20 +696,20 @@ const AdminApplication = () => {
 
 // ─── FieldPalette ─────────────────────────────────────────────────────────────
 const FieldPalette = ({ onAdd }) => (
-  <div style={paletteStyle}>
-    <p style={paletteTitleStyle}>Add question</p>
-    <div style={{ flex: 1, overflowY: "auto", padding: "8px 10px 12px" }}>
-      <PaletteSection label="Text">
+  <div className={styles.palette}>
+    <div className={styles.paletteHeader}>Form Elements</div>
+    <div style={{ flex: 1, overflowY: "auto" }}>
+      <PaletteSection label="Text Inputs">
         {["short", "para", "number", "email", "date"].map((t) => (
           <PaletteItem key={t} type={t} onAdd={onAdd} />
         ))}
       </PaletteSection>
-      <PaletteSection label="Choice">
+      <PaletteSection label="Selections">
         {["dropdown", "radio", "checkbox"].map((t) => (
           <PaletteItem key={t} type={t} onAdd={onAdd} />
         ))}
       </PaletteSection>
-      <PaletteSection label="Upload">
+      <PaletteSection label="Uploads">
         <PaletteItem type="file" onAdd={onAdd} />
       </PaletteSection>
     </div>
@@ -725,22 +717,17 @@ const FieldPalette = ({ onAdd }) => (
 );
 
 const PaletteSection = ({ label, children }) => (
-  <>
-    <p style={secLblStyle}>{label}</p>
+  <div className={styles.paletteSection}>
+    <div className={styles.paletteLabel}>{label}</div>
     {children}
-  </>
+  </div>
 );
 
 const PaletteItem = ({ type, onAdd }) => {
   const { label, icon } = FIELD_TYPES[type];
   return (
-    <div
-      style={paletteItemStyle}
-      onClick={() => onAdd(type)}
-      onMouseEnter={(e) => (e.currentTarget.style.background = "#eef3ff")}
-      onMouseLeave={(e) => (e.currentTarget.style.background = "#fff")}
-    >
-      <span style={paletteIconStyle}>{icon}</span>
+    <div className={styles.paletteItem} onClick={() => onAdd(type)}>
+      <span className={styles.paletteIcon}>{icon}</span>
       {label}
     </div>
   );
@@ -760,53 +747,31 @@ const FieldCard = ({
   onRemoveOption,
 }) => (
   <div
-    style={{
-      ...canvasCardStyle,
-      borderLeft: active ? "4px solid var(--first-color)" : "1px solid #d8e4f0",
-      boxShadow: active ? "0 2px 12px rgba(21,101,192,0.1)" : "none",
-      cursor: "pointer",
-      marginBottom: 10,
-    }}
+    className={`${styles.fieldCard} ${active ? styles.activeFieldCard : ""}`}
     onClick={onSelect}
   >
-    <div style={{ padding: "14px 18px" }}>
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          gap: 10,
-          marginBottom: 10,
+    <div className={styles.fieldHeader}>
+      <input
+        className={styles.fieldLabelInput}
+        value={field.label}
+        placeholder={`Question ${index + 1}`}
+        onChange={(e) => {
+          e.stopPropagation();
+          onUpdate({ label: e.target.value });
         }}
-      >
-        <input
-          style={fieldLblStyle}
-          value={field.label}
-          placeholder={`Question ${index + 1}`}
-          onChange={(e) => {
-            e.stopPropagation();
-            onUpdate({ label: e.target.value });
-          }}
-          onClick={(e) => e.stopPropagation()}
-        />
-        <div style={typePillStyle}>
-          {FIELD_TYPES[field.type].icon} {FIELD_TYPES[field.type].label} ▾
-          <select
-            style={hiddenSelectStyle}
-            value={field.type}
-            onChange={(e) => {
-              e.stopPropagation();
-              onUpdate({ type: e.target.value });
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            {Object.entries(FIELD_TYPES).map(([v, { label }]) => (
-              <option key={v} value={v}>
-                {label}
-              </option>
-            ))}
-          </select>
-        </div>
+        onClick={(e) => e.stopPropagation()}
+      />
+
+      {/* 🚀 Updated: Replaced dropdown with a static Type Badge */}
+      <div className={styles.typeBadge}>
+        <span className={styles.typeBadgeIcon}>
+          {FIELD_TYPES[field.type].icon}
+        </span>
+        <span>{FIELD_TYPES[field.type].label}</span>
       </div>
+    </div>
+
+    <div className={styles.fieldBody}>
       <FieldPreview
         field={field}
         active={active}
@@ -817,30 +782,36 @@ const FieldCard = ({
     </div>
 
     {active && (
-      <div style={fcFootStyle} onClick={(e) => e.stopPropagation()}>
-        <button style={factStyle} onClick={onDuplicate}>
-          ⧉ Duplicate
+      <div className={styles.fieldFooter} onClick={(e) => e.stopPropagation()}>
+        <button
+          className={styles.actionBtn}
+          onClick={onDuplicate}
+          title="Duplicate"
+        >
+          <i className="ri-file-copy-line"></i>
         </button>
-        <span style={sepStyle} />
-        <button style={{ ...factStyle, color: "#c62828" }} onClick={onDelete}>
-          🗑 Delete
+        <button
+          className={`${styles.actionBtn} ${styles.danger}`}
+          onClick={onDelete}
+          title="Delete"
+        >
+          <i className="ri-delete-bin-line"></i>
         </button>
-        <span style={sepStyle} />
-        <label style={reqLblStyle}>
-          Required
+        <div
+          style={{
+            width: 1,
+            height: 24,
+            background: "#e2e8f0",
+            margin: "0 8px",
+          }}
+        ></div>
+        <label className={styles.toggleLabel}>
+          <span>Required</span>
           <button
-            style={{
-              ...togStyle,
-              background: field.required ? "var(--first-color)" : "#c0d0e0",
-            }}
+            className={`${styles.toggleSwitch} ${field.required ? styles.on : ""}`}
             onClick={() => onUpdate({ required: !field.required })}
           >
-            <span
-              style={{
-                ...togDotStyle,
-                transform: field.required ? "translateX(14px)" : "none",
-              }}
-            />
+            <span className={styles.toggleDot} />
           </button>
         </label>
       </div>
@@ -859,49 +830,60 @@ const FieldPreview = ({
   switch (field.type) {
     case "short":
       return (
-        <input style={previewInputStyle} placeholder="Short answer" disabled />
+        <input
+          className={styles.previewInput}
+          placeholder="Short answer text"
+          disabled
+        />
       );
     case "para":
       return (
         <textarea
-          style={previewInputStyle}
-          placeholder="Long answer"
+          className={styles.previewInput}
+          placeholder="Long answer text"
           rows={2}
           disabled
         />
       );
     case "number":
-      return <input style={previewInputStyle} placeholder="Number" disabled />;
+      return (
+        <input
+          className={styles.previewInput}
+          placeholder="Numeric input"
+          disabled
+        />
+      );
     case "email":
       return (
         <input
-          style={previewInputStyle}
-          placeholder="email@example.com"
+          className={styles.previewInput}
+          placeholder="Email address"
           disabled
         />
       );
     case "date":
       return (
         <input
-          style={previewInputStyle}
+          className={styles.previewInput}
           placeholder="DD / MM / YYYY"
           disabled
         />
       );
     case "file":
       return (
-        <div style={fileZoneStyle}>
-          📎 Students upload a file here · PDF, JPG, PNG — max 10 MB
+        <div className={styles.fileZone}>
+          <i
+            className="ri-upload-cloud-2-line"
+            style={{ fontSize: "1.4rem", marginRight: 8 }}
+          ></i>{" "}
+          File Upload Zone (PDF, JPG, PNG)
         </div>
       );
     case "dropdown":
       return (
         <>
-          <select style={previewInputStyle} disabled>
-            <option>Choose an option</option>
-            {field.options.map((o, i) => (
-              <option key={i}>{o}</option>
-            ))}
+          <select className={styles.previewInput} disabled>
+            <option>Dropdown preview</option>
           </select>
           {active && (
             <OptionsEditor
@@ -950,48 +932,29 @@ const OptionsEditor = ({
   onAdd,
   onRemove,
 }) => (
-  <div style={{ marginTop: 6 }}>
+  <div style={{ marginTop: 16 }}>
     {options.map((o, i) => (
-      <div
-        key={i}
-        style={{
-          display: "flex",
-          alignItems: "center",
-          gap: 8,
-          marginBottom: 6,
-        }}
-      >
+      <div key={i} className={styles.optionRow}>
         {shape === "circle" && (
-          <span
-            style={{
-              width: 13,
-              height: 13,
-              borderRadius: "50%",
-              border: "1.5px solid #b0c0d0",
-              flexShrink: 0,
-            }}
-          />
+          <i
+            className="ri-checkbox-blank-circle-line"
+            style={{ color: "#cbd5e1" }}
+          ></i>
         )}
         {shape === "square" && (
-          <span
-            style={{
-              width: 13,
-              height: 13,
-              borderRadius: 3,
-              border: "1.5px solid #b0c0d0",
-              flexShrink: 0,
-            }}
-          />
+          <i
+            className="ri-checkbox-blank-line"
+            style={{ color: "#cbd5e1" }}
+          ></i>
         )}
         {shape === "number" && (
-          <span style={{ fontSize: 11, color: "#aab8c8", minWidth: 16 }}>
-            {i + 1}.
-          </span>
+          <span style={{ color: "#94a3b8", width: 20 }}>{i + 1}.</span>
         )}
+
         {active ? (
           <>
             <input
-              style={optInputStyle}
+              className={styles.optionInput}
               value={o}
               onChange={(e) => {
                 e.stopPropagation();
@@ -1001,30 +964,31 @@ const OptionsEditor = ({
             />
             {options.length > 1 && (
               <button
-                style={optRemoveStyle}
+                className={styles.actionBtn}
+                style={{ padding: 4 }}
                 onClick={(e) => {
                   e.stopPropagation();
                   onRemove(i);
                 }}
               >
-                ×
+                <i className="ri-close-line"></i>
               </button>
             )}
           </>
         ) : (
-          <span style={{ fontSize: 13, color: "#8a9ab0" }}>{o}</span>
+          <span style={{ color: "#64748b" }}>{o}</span>
         )}
       </div>
     ))}
     {active && (
       <button
-        style={addOptStyle}
+        className={styles.addOptionBtn}
         onClick={(e) => {
           e.stopPropagation();
           onAdd();
         }}
       >
-        + Add option
+        <i className="ri-add-line"></i> Add option
       </button>
     )}
   </div>
@@ -1032,247 +996,26 @@ const OptionsEditor = ({
 
 // ─── EmptyCanvas ──────────────────────────────────────────────────────────────
 const EmptyCanvas = ({ onAdd }) => (
-  <div style={emptyStyle}>
-    <div style={{ fontSize: 28, marginBottom: 10 }}>📋</div>
-    <p style={{ marginBottom: 14, color: "#8a9ab0" }}>
-      Click a field type on the left to add your first question
+  <div className={styles.emptyState}>
+    <i
+      className="ri-file-list-3-line"
+      style={{
+        fontSize: "3rem",
+        color: "#cbd5e1",
+        marginBottom: 16,
+        display: "block",
+      }}
+    ></i>
+    <h3 style={{ color: "#0f172a", fontSize: "1.2rem", marginBottom: 8 }}>
+      Form is empty
+    </h3>
+    <p className={styles.emptyText}>
+      Start building your form by adding fields from the palette on the left.
     </p>
-    <button style={addFirstBtnStyle} onClick={() => onAdd("short")}>
-      + Add first question
+    <button className={styles.emptyBtn} onClick={() => onAdd("short")}>
+      <i className="ri-add-line"></i> Add First Question
     </button>
   </div>
 );
-
-// ─── Inline Styles ────────────────────────────────────────────────────────────
-const canvasCardStyle = {
-  background: "#fff",
-  border: "1px solid #d8e4f0",
-  borderRadius: 12,
-  overflow: "hidden",
-  marginBottom: 10,
-};
-const descStyle = {
-  width: "100%",
-  border: "none",
-  outline: "none",
-  borderBottom: "1.5px solid #d8e4f0",
-  fontSize: 13,
-  color: "#5a6a7a",
-  background: "transparent",
-  resize: "none",
-  fontFamily: "inherit",
-  paddingBottom: 3,
-};
-const paletteStyle = {
-  width: 200,
-  background: "#fff",
-  borderRight: "1px solid #d8e4f0",
-  display: "flex",
-  flexDirection: "column",
-  flexShrink: 0,
-};
-const paletteTitleStyle = {
-  fontSize: 10,
-  fontWeight: 700,
-  color: "#8a9ab0",
-  textTransform: "uppercase",
-  letterSpacing: ".6px",
-  padding: "12px 14px 8px",
-  borderBottom: "1px solid #d8e4f0",
-};
-const secLblStyle = {
-  fontSize: 10,
-  fontWeight: 700,
-  color: "#aab8c8",
-  textTransform: "uppercase",
-  letterSpacing: ".5px",
-  padding: "10px 4px 5px",
-};
-const paletteItemStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  padding: "7px 8px",
-  borderRadius: 8,
-  border: "1px solid #e0eaf4",
-  background: "#fff",
-  cursor: "pointer",
-  marginBottom: 5,
-  transition: "all .15s",
-  color: "#5a6a7a",
-  fontSize: 13,
-};
-const paletteIconStyle = {
-  width: 24,
-  height: 24,
-  borderRadius: 6,
-  background: "#f4f7fb",
-  display: "flex",
-  alignItems: "center",
-  justifyContent: "center",
-  fontSize: 13,
-  flexShrink: 0,
-};
-const fieldLblStyle = {
-  flex: 1,
-  border: "none",
-  outline: "none",
-  fontSize: 14,
-  fontWeight: 600,
-  color: "#1a2e4a",
-  background: "transparent",
-  borderBottom: "1.5px solid #d8e4f0",
-  padding: "3px 0",
-  fontFamily: "inherit",
-};
-const typePillStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 5,
-  padding: "5px 9px",
-  border: "1px solid #d0dcea",
-  borderRadius: 7,
-  background: "#f4f7fb",
-  fontSize: 11.5,
-  color: "#5a6a7a",
-  whiteSpace: "nowrap",
-  flexShrink: 0,
-  position: "relative",
-  cursor: "pointer",
-};
-const hiddenSelectStyle = {
-  position: "absolute",
-  inset: 0,
-  opacity: 0,
-  cursor: "pointer",
-  width: "100%",
-};
-const previewInputStyle = {
-  width: "100%",
-  padding: "6px 0",
-  border: "none",
-  borderBottom: "1.5px solid #d8e4f0",
-  fontSize: 13,
-  color: "#8a9ab0",
-  background: "transparent",
-  fontFamily: "inherit",
-};
-const fileZoneStyle = {
-  border: "1.5px dashed #c0d0e0",
-  borderRadius: 8,
-  padding: "16px",
-  textAlign: "center",
-  color: "#8a9ab0",
-  fontSize: 12.5,
-  marginTop: 3,
-  background: "#f8fafd",
-};
-const fcFootStyle = {
-  padding: "8px 18px",
-  borderTop: "1px solid #e8f0f8",
-  display: "flex",
-  alignItems: "center",
-  gap: 10,
-  justifyContent: "flex-end",
-  background: "#f8fafd",
-};
-const sepStyle = { width: 1, height: 13, background: "#d8e4f0" };
-const factStyle = {
-  background: "none",
-  border: "none",
-  cursor: "pointer",
-  padding: "3px 8px",
-  borderRadius: 6,
-  fontSize: 12,
-  fontFamily: "inherit",
-  color: "#5a6a7a",
-};
-const reqLblStyle = {
-  display: "flex",
-  alignItems: "center",
-  gap: 7,
-  fontSize: 12,
-  color: "#5a6a7a",
-  cursor: "pointer",
-  userSelect: "none",
-};
-const togStyle = {
-  width: 30,
-  height: 16,
-  borderRadius: 12,
-  position: "relative",
-  transition: "background .2s",
-  cursor: "pointer",
-  border: "none",
-  flexShrink: 0,
-};
-const togDotStyle = {
-  position: "absolute",
-  top: 2,
-  left: 2,
-  width: 12,
-  height: 12,
-  borderRadius: "50%",
-  background: "#fff",
-  transition: "transform .2s",
-  display: "block",
-};
-const optInputStyle = {
-  flex: 1,
-  border: "none",
-  borderBottom: "1px solid #e0eaf4",
-  outline: "none",
-  fontSize: 13,
-  color: "#5a6a7a",
-  background: "transparent",
-  padding: "2px 0",
-  fontFamily: "inherit",
-};
-const optRemoveStyle = {
-  background: "none",
-  border: "none",
-  color: "#aab8c8",
-  cursor: "pointer",
-  fontSize: 13,
-  lineHeight: 1,
-};
-const addOptStyle = {
-  background: "none",
-  border: "none",
-  fontSize: 12,
-  color: "var(--first-color)",
-  cursor: "pointer",
-  padding: "2px 0",
-  fontFamily: "inherit",
-  margin: 1,
-};
-const emptyStyle = {
-  border: "2px dashed #d0dcea",
-  borderRadius: 12,
-  padding: "48px 20px",
-  textAlign: "center",
-  background: "#fff",
-};
-const addFirstBtnStyle = {
-  padding: "8px 18px",
-  borderRadius: 8,
-  border: "none",
-  background: "var(--first-color)",
-  color: "#fff",
-  fontSize: 13,
-  cursor: "pointer",
-  fontFamily: "inherit",
-};
-const toastStyle = {
-  position: "fixed",
-  bottom: 18,
-  right: 18,
-  padding: "9px 16px",
-  borderRadius: 8,
-  background: "#1a2e4a",
-  color: "#fff",
-  fontSize: 12.5,
-  zIndex: 9999,
-};
 
 export default AdminApplication;
