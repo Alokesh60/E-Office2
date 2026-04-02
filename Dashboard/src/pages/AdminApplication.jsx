@@ -1,6 +1,40 @@
 import React, { useState, useEffect } from "react";
-import styles from "./AdminApplication.module.css";
-import toast from "react-hot-toast";
+import styles from "./Application.module.css";
+import { toast } from "react-hot-toast";
+
+const availableRoles = [
+  "director",
+  "dean_academic",
+  "dean_faculty_welfare",
+  "dean_alumni_relations",
+  "dean_planing_development",
+  "dean_student_welfare",
+  "dean_research_consultancy",
+  "registrar",
+  "associate_dean",
+  "hod_maths",
+  "hod_physics",
+  "hod_chemistry",
+  "hod_humanities",
+  "hod_mba",
+  "hod_cse",
+  "hod_EIE",
+  "hod_mech",
+  "hod_ece",
+  "hod_elec",
+  "hod_civil",
+  "associate_dean_sw",
+  "associate_dean_rc",
+  "associate_dean_ar",
+  "associate_dean_pd",
+  "associate_dean_ac",
+  "associate_dean_fw",
+  "deputy_registrar",
+  "assistant_registrar",
+  "warden",
+  "account_officer",
+  "officer",
+];
 
 const mapBackendType = (type) => {
   switch (type) {
@@ -54,13 +88,23 @@ function makeField(type) {
 // ─── AdminApplication ────────────────────────────────────────────────────────
 const AdminApplication = () => {
   const [forms, setForms] = useState([]);
-  const [activeForm, setActiveForm] = useState(null); // which card's modal is open
+  const [activeForm, setActiveForm] = useState(null);
   const [fields, setFields] = useState([]);
   const [activeFieldId, setActiveFieldId] = useState(null);
   const [formDesc, setFormDesc] = useState("");
-  const [toast, setToast] = useState("");
+  const [toastMsg, setToastMsg] = useState("");
   const [deleteTarget, setDeleteTarget] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [workflow, setWorkflow] = useState([]);
+  const [roleSearch, setRoleSearch] = useState("");
+
+  const addRoleToWorkflow = (role) =>
+    setWorkflow((prev) => (prev.includes(role) ? prev : [...prev, role]));
+  const filteredRoles = availableRoles.filter((role) =>
+    role.toLowerCase().includes(roleSearch.toLowerCase()),
+  );
+  const removeRoleFromWorkflow = (role) =>
+    setWorkflow((prev) => prev.filter((r) => r !== role));
 
   useEffect(() => {
     loadForms();
@@ -70,18 +114,6 @@ const AdminApplication = () => {
     try {
       const res = await fetch("http://127.0.0.1:8000/api/forms");
       const data = await res.json();
-
-      const formatted = data.map((f) => ({
-        id: f.id,
-        backendId: f.id,
-        title: f.name,
-        icon: "ri-file-line",
-        color: "var(--first-color)",
-        fields: f.fields ? f.fields.length : 0,
-        rawFields: f.fields,
-        isNew: false,
-      }));
-
       setForms(
         data.map((f) => ({
           id: f.id,
@@ -89,6 +121,8 @@ const AdminApplication = () => {
           description: f.description,
           rawFields: f.fields,
           backendId: f.id,
+          icon: "ri-file-line",
+          color: "var(--first-color)",
         })),
       );
     } catch (err) {
@@ -96,43 +130,32 @@ const AdminApplication = () => {
     }
   };
 
-  // open builder for a form card
   const openBuilder = (form) => {
     setActiveForm(form);
-
     if (form.rawFields && form.rawFields.length > 0) {
-      const mappedFields = form.rawFields.map((f, index) => ({
+      const mappedFields = form.rawFields.map((f) => ({
         id: `f_${f.id}`,
         type: mapBackendType(f.field_type),
         label: f.label,
         required: f.required,
         options: f.options || ["Option 1", "Option 2"],
       }));
-
       setFields(mappedFields);
     } else {
       setFields([]);
     }
-
     setFormDesc(form.description || "");
     setActiveFieldId(null);
   };
 
   const closeBuilder = () => setActiveForm(null);
 
-  // ── form management ─────────────────────────────────────────────────────────
-  const deleteForm = (formId, formTitle) => {
-    setDeleteTarget({ id: formId, title: formTitle });
-  };
-
   const confirmDelete = async () => {
     try {
       await fetch(`http://127.0.0.1:8000/api/forms/${deleteTarget.id}`, {
         method: "DELETE",
       });
-
       await loadForms();
-
       showToast(`Deleted "${deleteTarget.title}"`);
       setDeleteTarget(null);
     } catch (err) {
@@ -141,7 +164,6 @@ const AdminApplication = () => {
     }
   };
 
-  // ── field CRUD ──────────────────────────────────────────────────────────────
   const addField = (type) => {
     const f = makeField(type);
     setFields((prev) => [...prev, f]);
@@ -227,42 +249,30 @@ const AdminApplication = () => {
     }
   };
 
-  // ── save ────────────────────────────────────────────────────────────────────
   const saveForm = async () => {
     if (saving) return;
     setSaving(true);
-
     try {
-      console.log("Saving started..");
-
       let formId;
-
       if (!activeForm.isNew && !isNaN(activeForm.backendId)) {
-        console.log("Updating form..");
-
-        // updating existing form in backend
-        const formRes = await fetch(
-          `http://127.0.0.1:8000/api/forms/${activeForm.backendId}`,
-          {
-            method: "PUT",
-            headers: {
-              "Content-Type": "application/json",
-              Accept: "application/json",
-            },
-            body: JSON.stringify({
-              name: activeForm.title,
-              description: formDesc,
-            }),
+        await fetch(`http://127.0.0.1:8000/api/forms/${activeForm.backendId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
           },
-        );
-
-        const data = await formRes.json();
-        console.log("Update Response: ", data);
-
+          body: JSON.stringify({
+            name: activeForm.title,
+            description: formDesc,
+            workflow: workflow,
+          }),
+        });
         formId = activeForm.backendId;
+        await fetch(
+          `http://127.0.0.1:8000/api/forms/${activeForm.backendId}/fields`,
+          { method: "DELETE" },
+        );
       } else {
-        console.log("Creating form..");
-
         const formRes = await fetch("http://127.0.0.1:8000/api/forms", {
           method: "POST",
           headers: {
@@ -272,27 +282,12 @@ const AdminApplication = () => {
           body: JSON.stringify({
             name: activeForm.title,
             description: formDesc,
-            created_by: 1, // hardcoded user ID for now
+            created_by: 1,
+            workflow: workflow,
           }),
         });
-
         const data = await formRes.json();
-        console.log("Create response:", data);
-
         formId = data.id;
-      }
-
-      if (!activeForm.isNew && !isNaN(activeForm.backendId)) {
-        console.log("Deleting existing fields..");
-
-        const delRes = await fetch(
-          `http://127.0.0.1:8000/api/forms/${activeForm.backendId}/fields`,
-          {
-            method: "DELETE",
-          },
-        );
-
-        console.log("Delete response status", delRes.status);
       }
 
       const fieldPromises = fields.map((f, index) => {
@@ -309,17 +304,16 @@ const AdminApplication = () => {
             field_type: mapType(f.type),
             required: f.required,
             options: ["dropdown", "radio", "checkbox"].includes(f.type)
-              ? f.options
+              ? JSON.stringify(f.options)
               : null,
             field_order: index,
+            is_primary: index === 0,
           }),
         });
       });
 
       await Promise.all(fieldPromises);
-
       showToast("Form saved successfully!");
-
       await loadForms();
       closeBuilder();
     } catch (err) {
@@ -331,18 +325,16 @@ const AdminApplication = () => {
   };
 
   const showToast = (msg) => {
-    setToast(msg);
-    setTimeout(() => setToast(""), 2600);
+    setToastMsg(msg);
+    setTimeout(() => setToastMsg(""), 2600);
   };
 
-  // ─── render ─────────────────────────────────────────────────────────────────
   return (
     <div className={styles.wrapper}>
-      {/* ── card grid (reuses Application.module.css exactly) ── */}
       <div className={styles.panel}>
         <h2 className={styles.heading}>Manage Application Forms</h2>
         <div className={styles.grid}>
-          {/* ── ADD CUSTOM FORM CARD ── */}
+          {/* Custom Form Card */}
           <div
             className={styles.card}
             style={{
@@ -377,18 +369,15 @@ const AdminApplication = () => {
                   icon: "ri-file-add-line",
                   color: "var(--first-color)",
                   fields: 0,
-                  isNew: true, // flag to indicate this form hasn't been saved to backend yet
+                  isNew: true,
                 };
-
                 setForms([...forms, newForm]);
-
                 openBuilder(newForm);
               }}
             >
               <i className="ri-add-circle-line"></i> Add New Form
             </button>
           </div>
-          {/* ── END NEW CARD ── */}
 
           {forms.map((form) => (
             <div
@@ -396,7 +385,6 @@ const AdminApplication = () => {
               className={styles.card}
               style={{ position: "relative" }}
             >
-              {/* ── DELETE BUTTON (Positioned top-right) ── */}
               <button
                 style={{
                   position: "absolute",
@@ -418,7 +406,6 @@ const AdminApplication = () => {
               >
                 <i className="ri-delete-bin-line"></i>
               </button>
-
               <div className={styles.cardTop}>
                 <div
                   className={styles.iconBox}
@@ -427,7 +414,6 @@ const AdminApplication = () => {
                   <i className={form.icon}></i>
                 </div>
                 <div className={styles.cardText}>
-                  {/* Added padding right so long titles don't overlap the delete icon */}
                   <h3 style={{ paddingRight: "24px" }}>{form.title}</h3>
                   <p>
                     {form.rawFields?.length > 0
@@ -436,8 +422,6 @@ const AdminApplication = () => {
                   </p>
                 </div>
               </div>
-
-              {/* ── BUILD FORM BUTTON (Restored exactly to original) ── */}
               <button
                 className={styles.fillBtn}
                 onClick={() => openBuilder(form)}
@@ -449,7 +433,7 @@ const AdminApplication = () => {
         </div>
       </div>
 
-      {/* ── form builder modal ── */}
+      {/* form builder modal */}
       {activeForm && (
         <div className={styles.modalOverlay} onClick={closeBuilder}>
           <div
@@ -463,7 +447,6 @@ const AdminApplication = () => {
               flexDirection: "column",
             }}
           >
-            {/* header */}
             <div className={styles.modalHeader}>
               <div
                 className={styles.modalIcon}
@@ -492,7 +475,6 @@ const AdminApplication = () => {
               </button>
             </div>
 
-            {/* builder body: left palette + right canvas */}
             <div
               style={{
                 display: "flex",
@@ -501,10 +483,8 @@ const AdminApplication = () => {
                 borderTop: "1px solid var(--border-color, #e0eaf4)",
               }}
             >
-              {/* LEFT: field palette */}
               <FieldPalette onAdd={addField} />
 
-              {/* RIGHT: canvas */}
               <div
                 style={{
                   flex: 1,
@@ -513,7 +493,6 @@ const AdminApplication = () => {
                   background: "var(--body-color, #f4f6fb)",
                 }}
               >
-                {/* form description */}
                 <div style={canvasCardStyle}>
                   <div
                     style={{
@@ -546,7 +525,99 @@ const AdminApplication = () => {
                   </div>
                 </div>
 
-                {/* fields */}
+                <div
+                  style={{
+                    background: "#ffffff",
+                    border: "1px solid #d8e4f0",
+                    borderRadius: "12px",
+                    marginBottom: 14,
+                    padding: 12,
+                  }}
+                >
+                  <p style={{ margin: "0 0 8px", fontWeight: 600 }}>
+                    Approval Workflow
+                  </p>
+                  <input
+                    type="text"
+                    placeholder="Search roles..."
+                    value={roleSearch}
+                    onChange={(e) => setRoleSearch(e.target.value)}
+                    style={{
+                      width: "100%",
+                      padding: "8px 10px",
+                      marginBottom: 10,
+                      borderRadius: 6,
+                      border: "1px solid #c7d3e0",
+                    }}
+                  />
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+                    {filteredRoles.length === 0 ? (
+                      <small style={{ color: "#777" }}>No roles found</small>
+                    ) : (
+                      filteredRoles.map((role) => (
+                        <button
+                          key={role}
+                          type="button"
+                          style={{
+                            border: "1px solid #c0d0e0",
+                            background: workflow.includes(role)
+                              ? "#e6f0ff"
+                              : "#fff",
+                            color: "#2e3a59",
+                            borderRadius: 6,
+                            padding: "6px 10px",
+                            cursor: workflow.includes(role)
+                              ? "not-allowed"
+                              : "pointer",
+                          }}
+                          onClick={() => addRoleToWorkflow(role)}
+                          disabled={workflow.includes(role)}
+                        >
+                          {role.replace(/_/g, " ")}
+                        </button>
+                      ))
+                    )}
+                  </div>
+                  <div style={{ marginTop: 10, minHeight: 28 }}>
+                    {workflow.length === 0 ? (
+                      <small>No roles selected</small>
+                    ) : (
+                      workflow.map((role, idx) => (
+                        <span
+                          key={role}
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: 4,
+                            marginRight: 6,
+                            background: "#f1f5ff",
+                            border: "1px solid #ccd9f0",
+                            borderRadius: 999,
+                            padding: "4px 8px",
+                            fontSize: 12,
+                          }}
+                        >
+                          <span>{role.replace(/_/g, " ")}</span>
+                          <button
+                            type="button"
+                            style={{
+                              border: "none",
+                              background: "transparent",
+                              color: "#a33",
+                              cursor: "pointer",
+                              padding: 0,
+                            }}
+                            onClick={() => removeRoleFromWorkflow(role)}
+                          >
+                            ❌
+                          </button>
+                          {idx < workflow.length - 1 && <span>→</span>}
+                        </span>
+                      ))
+                    )}
+                  </div>
+                </div>
+
                 {fields.length === 0 ? (
                   <EmptyCanvas onAdd={addField} />
                 ) : (
@@ -573,20 +644,13 @@ const AdminApplication = () => {
               </div>
             </div>
 
-            {/* footer */}
             <div className={styles.modalFooter}>
               <span
                 style={{ fontSize: 12, color: "#8a9ab0", marginRight: "auto" }}
               >
                 {fields.length} question{fields.length !== 1 ? "s" : ""}
               </span>
-              <button
-                className={styles.cancelBtn}
-                onClick={() => {
-                  console.log("SAVE CLCIKED");
-                  saveForm();
-                }}
-              >
+              <button className={styles.cancelBtn} onClick={() => saveForm()}>
                 <i className="ri-save-line"></i> Save Form
               </button>
             </div>
@@ -594,10 +658,9 @@ const AdminApplication = () => {
         </div>
       )}
 
-      {/* toast */}
-      {toast && <div style={toastStyle}>{toast}</div>}
+      {toastMsg && <div style={toastStyle}>{toastMsg}</div>}
 
-      {/* 🔥 DELETE CONFIRM MODAL */}
+      {/* DELETE CONFIRM MODAL */}
       {deleteTarget && (
         <div
           className={styles.modalOverlay}
@@ -611,14 +674,12 @@ const AdminApplication = () => {
             <div className={styles.modalHeader}>
               <h3>Delete Form</h3>
             </div>
-
             <div style={{ padding: "16px" }}>
               <p>
                 Are you sure you want to delete{" "}
                 <strong>{deleteTarget.title}</strong>?
               </p>
             </div>
-
             <div className={styles.modalFooter}>
               <button
                 className={styles.cancelBtn}
@@ -626,7 +687,6 @@ const AdminApplication = () => {
               >
                 Cancel
               </button>
-
               <button
                 className={styles.submitBtn}
                 style={{ background: "#c62828" }}
@@ -710,7 +770,6 @@ const FieldCard = ({
     onClick={onSelect}
   >
     <div style={{ padding: "14px 18px" }}>
-      {/* label + type selector row */}
       <div
         style={{
           display: "flex",
@@ -748,8 +807,6 @@ const FieldCard = ({
           </select>
         </div>
       </div>
-
-      {/* preview */}
       <FieldPreview
         field={field}
         active={active}
@@ -759,7 +816,6 @@ const FieldCard = ({
       />
     </div>
 
-    {/* active footer */}
     {active && (
       <div style={fcFootStyle} onClick={(e) => e.stopPropagation()}>
         <button style={factStyle} onClick={onDuplicate}>
@@ -838,7 +894,6 @@ const FieldPreview = ({
           📎 Students upload a file here · PDF, JPG, PNG — max 10 MB
         </div>
       );
-
     case "dropdown":
       return (
         <>
@@ -859,7 +914,6 @@ const FieldPreview = ({
           )}
         </>
       );
-
     case "radio":
       return (
         <OptionsEditor
@@ -871,7 +925,6 @@ const FieldPreview = ({
           onRemove={onRemoveOption}
         />
       );
-
     case "checkbox":
       return (
         <OptionsEditor
@@ -883,7 +936,6 @@ const FieldPreview = ({
           onRemove={onRemoveOption}
         />
       );
-
     default:
       return null;
   }
@@ -991,7 +1043,7 @@ const EmptyCanvas = ({ onAdd }) => (
   </div>
 );
 
-// ─── inline styles ────────────────────────────────────────────────────────────
+// ─── Inline Styles ────────────────────────────────────────────────────────────
 const canvasCardStyle = {
   background: "#fff",
   border: "1px solid #d8e4f0",
@@ -1192,7 +1244,7 @@ const addOptStyle = {
   cursor: "pointer",
   padding: "2px 0",
   fontFamily: "inherit",
-  marginTop: 1,
+  margin: 1,
 };
 const emptyStyle = {
   border: "2px dashed #d0dcea",
