@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import styles from "./Application.module.css";
+import styles from "./AdminApplication.module.css";
 import toast from "react-hot-toast";
 
 const mapBackendType = (type) => {
