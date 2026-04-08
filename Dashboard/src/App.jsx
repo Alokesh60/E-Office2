@@ -17,7 +17,7 @@ import StudentSubmissions from "./pages/StudentSubmissions";
 import { Toaster } from "react-hot-toast";
 
 export default function App() {
-  const role = "stf"; // change dynamically later
+  const role = "admin"; // change dynamically later
 
   return (
     <BrowserRouter>
