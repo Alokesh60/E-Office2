@@ -1,0 +1,132 @@
+.helpContainer {
+  padding: 20px;
+}
+
+.title {
+  font-size: 45px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  color: #000;
+}
+.headerRow{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:20px;
+}
+.helpIllustration{
+  width:160px;
+  height:auto;
+}
+.sectionCard{
+  background:#f8fafc;
+  border:1px solid #e2e8f0;
+  border-radius:12px;
+  padding:20px;
+  margin-bottom:20px;
+  position:relative;
+}
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 600;
+  font-size: 20px;
+  color: #1e293b;
+  margin-bottom: 18px;
+}
+
+.faqItem {
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.faqQuestion {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 0;
+  cursor: pointer;
+  font-size: 18px;
+  color: #475569;
+}
+
+.faqAnswer {
+  padding-bottom: 15px;
+    max-height: 0;
+  overflow: hidden;
+  opacity: 0;
+  transition: all 0.35s ease;
+  font-size: 16px;
+  color: #64748b;
+}
+.open {
+  max-height: 200px;
+  opacity: 1;
+  padding-bottom: 15px;
+}
+.bottomGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.inputField,
+.textArea,
+.smallInput {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: white;
+  margin-bottom: 10px;
+  font-size: 13px;
+}
+
+.textArea {
+  height: 80px;
+  resize: none;
+}
+
+.settingRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.settingRow label {
+  font-size: 13px;
+  color: #475569;
+}
+
+.smallInput {
+  width: 60%;
+  margin-bottom: 0;
+}
+
+.uploadSection {
+  font-size: 12px;
+  color: #64748b;
+  margin-bottom: 15px;
+}
+
+.uploadBtn {
+  display: block;
+  margin-top: 5px;
+  padding: 8px;
+  border: 1px dashed #cbd5e1;
+  background: white;
+  width: 100%;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.submitBtn {
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 6px;
+  float: right;
+  cursor: pointer;
+  font-size: 13px;
+}

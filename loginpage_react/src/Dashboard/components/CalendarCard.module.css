@@ -1,0 +1,171 @@
+.calendar_card {
+    width: 100%;
+    min-height: 360px;
+    background-color: #E9F0F8;
+    border-radius: 25px;
+    padding: 25px;
+    box-shadow: 0px 4px 4px rgba(0,0,0,0.25);
+
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.calendar_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.calendar_nav_btn {
+    background: transparent;
+    border: none;
+    color: #FFFFFF;
+    font-size: 22px;
+    cursor: pointer;
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+}
+
+.calendar_nav_btn i {
+    color: #022544;
+    font-size: 14px;
+}
+
+.calendar_month {
+    font-family: 'Roboto', sans-serif;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 1em;
+    color: #4A5660;
+    text-align: center;
+    margin: 0;
+}
+
+.weekday {
+    width: 40px;
+    height: 29px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #FFFFFF;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 1.2em;
+    letter-spacing: 15%;
+    text-transform: uppercase;
+    color: #022544;
+    border-radius: 5px;
+}
+
+.date_row {
+    display: flex;
+    gap: 10px;
+    justify-content: space-between;
+}
+
+.calendar_weekdays {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+  text-align: center;
+  padding: 6px 0;
+}
+
+.calendar_dates {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr); /* 7 columns for Sun..Sat */
+  gap: 7px;
+  margin-top: 8px;
+  align-items: start; /* top-align each cell so rows look consistent */
+}
+
+/* Individual date cell */
+.date_cell {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  font-size: 13px;
+  padding-top: 4px;
+  border-radius: 6px;
+  background: transparent;
+}
+
+.date_cell:not(.inactive):hover {
+  background: rgba(0,0,0,0.04);
+}
+/* Inactive (leading/trailing) cells from previous/next month */
+.date_cell.inactive {
+  color: rgba(0,0,0,0.28);
+}
+
+
+.date_cell.today {
+  background: rgba(41,141,212,0.18);
+  border: 1px solid rgba(41,141,212,0.25);
+  font-weight: 600;
+}
+
+/* Holiday */
+.date_cell.holiday {
+  background: rgba(229,181,38,0.18);
+  border: 1px solid rgba(229,181,38,0.25);
+}
+
+/* Deadline look */
+.date_cell.deadline {
+  background: rgba(226,54,72,0.15);
+  border: 1px solid rgba(226,54,72,0.25);
+}
+
+.calendar_card .calendar_weekdays,
+.calendar_card .calendar_dates {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .date_cell { min-height: 40px; font-size: 13px; }
+  .calendar_dates { gap:6px; }
+}
+
+.calendar_legend {
+  margin-top: 4px;
+  display: flex;
+  gap: 50px;
+  font-size: 12px;
+}
+
+.legend_item_cal {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.7184em;
+    color: #000000;
+}
+
+.legend_box {
+  width: 10px;
+  height: 10px;
+  border-radius: 3px;
+}
+
+.legend_box.today {
+    background-color: #C7DAF0;
+}
+
+.legend_box.holiday {
+    background-color: #FFD54F;
+}
+
+.legend_box.deadline {
+    background-color: #EF5350;
+}

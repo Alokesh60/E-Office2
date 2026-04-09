@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\DownloadController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\AuthController;
 
 Route::delete('/forms/{id}/fields', [FormController::class, 'deleteFields']);
 
@@ -61,5 +62,9 @@ Route::middleware('auth:sanctum')->get('/me', [UserController::class, 'me']);
 Route::middleware('auth:sanctum')->get('/applications/search', [ApplicationController::class, 'search']);
 
 Route::middleware('auth:sanctum')->get('/download/application/{id}', [DownloadController::class, 'application']);
+
+Route::post('/custom-register', [AuthController::class, 'register']);
+
+Route::post('/login-custom', [AuthController::class, 'login']);
 
 require __DIR__ . '/auth.php';
