@@ -11,7 +11,7 @@ const Sidebar = () => {
           to="/"
           className={`${styles.nav__link} ${location.pathname === "/" ? styles.active_link : ""}`}
         >
-          <i className="ri-dashboard-3-line"></i>
+          <i className="ri-dashboard-3-fill"></i>
           <span className={styles.nav__name}>Home</span>
         </Link>
 
@@ -19,7 +19,7 @@ const Sidebar = () => {
           to="/account"
           className={`${styles.nav__link} ${location.pathname === "/account" ? styles.active_link : ""}`}
         >
-          <i className="ri-account-box-line"></i>
+          <i className="ri-account-box-fill"></i>
           <span className={styles.nav__name}>Accounts</span>
         </Link>
 
@@ -27,7 +27,7 @@ const Sidebar = () => {
           to="/applications"
           className={`${styles.nav__link} ${location.pathname === "/applications" ? styles.active_link : ""}`}
         >
-          <i className="ri-rocket-line"></i>
+          <i className="ri-rocket-fill"></i>
           <span className={styles.nav__name}>Applications</span>
         </Link>
 
@@ -35,7 +35,7 @@ const Sidebar = () => {
           to="/files"
           className={`${styles.nav__link} ${location.pathname === "/files" ? styles.active_link : ""}`}
         >
-          <i className="ri-file-list-3-line"></i>
+          <i className="ri-file-list-3-fill"></i>
           <span className={styles.nav__name}>Files</span>
         </Link>
 
@@ -43,7 +43,7 @@ const Sidebar = () => {
           to="/settings"
           className={`${styles.nav__link} ${location.pathname === "/settings" ? styles.active_link : ""}`}
         >
-          <i className="ri-settings-3-line"></i>
+          <i className="ri-settings-3-fill"></i>
           <span className={styles.nav__name}>Settings</span>
         </Link>
       </ul>

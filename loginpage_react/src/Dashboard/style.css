@@ -1,0 +1,47 @@
+/*=============== GOOGLE FONTS ===============*/
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap");
+/*=============== VARIABLES CSS ===============*/
+/* ===== RESET (SCOPED SAFE) ===== */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ===== BODY ===== */
+body {
+  font-family: "Roboto", sans-serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ===== VARIABLES ===== */
+:root {
+  --first-color: rgb(27, 68, 110);
+  --black-color: hsl(248, 24%, 10%);
+  --white-color: #dde7f1;
+  --body-color: #dde7f1;
+}
+
+/* ===== LINKS ===== */
+a {
+  text-decoration: none;
+}
+
+/* ===== LIST ===== */
+ul {
+  list-style: none;
+}
+/* .scroll-page-active {
+  overflow: hidden;
+}
+.files-page-active {
+  overflow: hidden;
+}
+.account-page-active {
+  overflow: hidden;
+}
+.settings-page-active {
+  overflow: hidden;
+} */
+/* Disable dashboard scaling on Account page */

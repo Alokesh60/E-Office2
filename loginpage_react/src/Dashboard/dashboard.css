@@ -1,0 +1,71 @@
+/* ===== MAIN LAYOUT ===== */
+.main-container {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #DDE7F1;
+}
+
+/* ===== SIDEBAR WRAPPER ===== */
+.sidebar {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+/* ===== CONTENT AREA ===== */
+.content-area {
+  margin-left: 80px;   /* 🔥 THIS IS THE KEY FIX */
+  padding: 20px 40px;
+}
+
+/* ===== ACTIVE LINK ===== */
+.active-link {
+  background-color: var(--white-color);
+}
+
+.active-link i {
+  color: var(--first-color);
+}
+
+/* ===== DASHBOARD GRID ===== */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: 1fr 0.8fr 1.2fr 0.8fr;
+  grid-template-areas:
+    "profile announcement announcement stats"
+    "completion announcement announcement stats"
+    "calendar quick recent recent";
+  gap: 35px;
+}
+
+/* GRID AREAS */
+.profile-area { grid-area: profile; }
+.completion-area { grid-area: completion; }
+.announcement-area { grid-area: announcement; }
+.stats-area { grid-area: stats; }
+.calendar-area { grid-area: calendar; }
+.quick-area { grid-area: quick; }
+.recent-area { grid-area: recent; }
+
+.dashboard-grid > * {
+  width: 100%;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+  }
+
+  .content-area {
+    width: 100%;
+    padding: 15px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+}

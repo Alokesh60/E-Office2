@@ -1,0 +1,170 @@
+/* ===== Application Page ===== */
+
+.wrapper {
+  height: calc(100vh - 20px); /* adjust if topbar height differs */
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+/* ===== TOP ACTION BAR ===== */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.heading {
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: #1b1b2f;
+}
+
+.submissionBtn {
+  background: var(--first-color);
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: 0.2s;
+}
+
+.submissionBtn:hover {
+  background: var(--black-color);
+}
+
+/* ===== PANEL ===== */
+.panel {
+  flex: 1;
+  background: #d2dce6;
+  border-radius: 20px;
+  padding: 28px 36px;
+  box-shadow: 0 4px 24px rgba(27, 68, 110, 0.07);
+
+  display: flex;
+  flex-direction: column;
+
+  overflow: hidden; /* important */
+}
+
+/* ===== GRID (SCROLLABLE) ===== */
+.grid {
+  overflow-y: auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+
+  padding-right: 10px;
+
+  align-content: start; /* ✅ KEY FIX */
+}
+
+/* Scrollbar */
+.grid::-webkit-scrollbar {
+  width: 6px;
+}
+.grid::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .panel {
+    margin: 0 12px 16px 12px;
+    padding: 20px 16px;
+  }
+}
+
+/* ===== CARD ===== */
+.card {
+  background: #f7fafd;
+  border: 1.5px solid #e2ecf6;
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  transition: 0.2s;
+  align-items: start;
+}
+
+.card:hover {
+  box-shadow: 0 6px 24px rgba(27, 68, 110, 0.13);
+  transform: translateY(-3px);
+}
+
+.cardTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+}
+
+.iconBox {
+  width: 52px;
+  height: 52px;
+  border-radius: 12px;
+  background: var(--first-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.iconBox i {
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.cardText h3 {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1b1b2f;
+}
+
+.cardText p {
+  font-size: 0.85rem;
+  color: #6b7a8d;
+}
+
+/* ===== BUTTON ===== */
+.fillBtn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background-color: var(--first-color);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 18px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: 0.2s;
+  width: fit-content;
+}
+
+.fillBtn:hover {
+  background-color: var(--black-color);
+}
+
+/* ===== NO RESULT ===== */
+.noResult {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  padding: 40px 0;
+}

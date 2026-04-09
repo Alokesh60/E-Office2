@@ -1,0 +1,56 @@
+.aboutContainer {
+  padding: 25px 30px;
+}
+
+
+.aboutTitle{
+    margin: 0 0 20px 0;
+    font-family: "Segoe UI", sans-serif;
+    font-weight: 600;
+    font-size: 45px;
+    color: #000;
+    padding: 0px 0px 0px 0px;
+}
+
+/* image floats inside the text */
+.aboutImage {
+  width: 250px;
+  float: right;
+  margin-left: 20px;
+  margin-bottom: 10px;
+}
+
+.aboutContent {
+  line-height: 1.8;
+  font-size: 15px;
+  color: #444;
+}
+
+.aboutContent p {
+  margin-bottom: 16px;
+}
+.aboutFooter{
+  margin-top: 25px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;   /* centers horizontally */
+  text-align: center;    /* centers text */
+  gap: 3px;
+}
+
+/* first line */
+.footerMain{
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d2d2d;
+}
+
+/* second line */
+.footerSub{
+  font-size: 13px;
+  font-weight: 400;
+  color: #6b6b6b;
+}
