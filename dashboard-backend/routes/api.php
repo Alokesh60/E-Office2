@@ -10,6 +10,37 @@ use App\Http\Controllers\Api\DownloadController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
+use App\Http\Controllers\SubmissionController;
+
+use App\Models\Response;
+
+Route::post('/submission/{id}/send-back', [SubmissionController::class, 'sendBack']);
+
+Route::post('/submission/{id}/approve', [SubmissionController::class, 'approve']);
+Route::post('/submission/{id}/reject', [SubmissionController::class, 'reject']);
+
+Route::post('/submission/{id}/forward', [SubmissionController::class, 'forward']);
+
+Route::get('/submissions', function () {
+    $role = 'dean_student_welfare';
+    //$role = 'warden'; // Example role, replace with actual role logic
+    // dean_student_welfare
+
+    return Response::with(['form', 'answers.field'])
+        ->get()
+        ->filter(function ($submission) use ($role) {
+            $workflow = $submission->form->workflow;
+
+            if (!$workflow) return false;
+
+            $currentStep = $submission->current_step;
+
+            $currentRole = $workflow[$currentStep] ?? null;
+
+            return $currentRole === $role;
+        })
+        ->values();
+});
 
 Route::delete('/forms/{id}/fields', [FormController::class, 'deleteFields']);
 
@@ -21,9 +52,7 @@ Route::get('/forms', function () {
     return \App\Models\Form::with('fields')->get();
 });
 
-Route::post('/forms', function (Request $request) {
-    return \App\Models\Form::create($request->all());
-});
+Route::post('/forms', [FormController::class, 'store']);
 
 Route::post('/form-fields', function (Request $request) {
     return \App\Models\FormField::create($request->all());
@@ -68,22 +97,22 @@ Route::post('/login-custom', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    
+
     Route::get('/folders', [FileController::class, 'getFolders']);
     Route::post('/folder/create', [FileController::class, 'createFolder']);
     Route::put('/folder/{id}', [FileController::class, 'renameFolder']);       // rename folder
     Route::delete('/folder/{id}', [FileController::class, 'deleteFolder']);    // delete folder
 
-    
+
     Route::get('/files/search', [FileController::class, 'searchFiles']);
     Route::get('/files/{folderId}', [FileController::class, 'getFiles']);
 
     Route::post('/file/upload', [FileController::class, 'uploadFile']);
-    Route::put('/file/{id}', [FileController::class, 'renameFile']);           
+    Route::put('/file/{id}', [FileController::class, 'renameFile']);
     Route::delete('/file/{id}', [FileController::class, 'deleteFile']);
     Route::get('/file/download/{id}', [FileController::class, 'downloadFile']);
 
-    
+
     Route::get('/storage-info', [FileController::class, 'storageInfo']);
 });
 

@@ -6,7 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Form extends Model
 {
-  protected $fillable = ['name', 'description', 'created_by', 'is_active'];
+  protected $fillable = ['name', 'description', 'created_by', 'workflow'];
+  protected $casts = ['workflow' => 'array'];
 
   public function fields()
   {

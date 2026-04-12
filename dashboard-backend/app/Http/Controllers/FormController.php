@@ -11,6 +11,18 @@ use Illuminate\Http\JsonResponse;
 
 class FormController extends Controller
 {
+  public function store(Request $request)
+  {
+    $form = \App\Models\Form::create([
+      'name' => $request->name,
+      'description' => $request->description,
+      'created_by' => $request->created_by,
+      'workflow' => $request->workflow,
+    ]);
+
+    return response()->json($form);
+  }
+
   public function deleteFields($id)
   {
     \App\Models\FormField::where('form_id', $id)->delete();
@@ -33,6 +45,7 @@ class FormController extends Controller
     $form->update([
       'name' => $request->name,
       'description' => $request->description,
+      'workflow' => $request->workflow,
     ]);
 
     $form->fields()->delete();
@@ -79,7 +92,9 @@ class FormController extends Controller
 
     try {
       $response = \App\Models\Response::create([
-        'form_id' => $id
+        'form_id' => $id,
+        'status' => 'pending',
+        'current_step' => 0,
       ]);
 
       foreach ($form->fields as $field) {
