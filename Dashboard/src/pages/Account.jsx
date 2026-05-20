@@ -3,7 +3,7 @@ import styles from "./Account.module.css";
 import { useEffect } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 
-const Account = () => {
+const Account = ({ role }) => {
   const location = useLocation();
   useEffect(() => {
     document.body.classList.add("account-page-active");
@@ -119,10 +119,18 @@ const Account = () => {
                   />
                 </div>
 
-                <div>
-                  <label>Student ID</label>
-                  <input type="text" placeholder="Enter your student ID" />
-                </div>
+                {/* Conditionally render ID field based on role */}
+                {role === "student" ? (
+                  <div>
+                    <label>Student ID</label>
+                    <input type="text" placeholder="Enter your student ID" />
+                  </div>
+                ) : role === "faculty" ? (
+                  <div>
+                    <label>Employee ID</label>
+                    <input type="text" placeholder="Enter your employee ID" />
+                  </div>
+                ) : null}
 
                 <h4>Contact Information</h4>
                 <div className={styles.formGrid}>
