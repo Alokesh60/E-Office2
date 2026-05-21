@@ -27,7 +27,7 @@ class SettingsController extends Controller
             'email'       => $user->email,
             'student_id'  => $user->student_id,
             'avatar'      => $user->avatar
-                                ? Storage::disk('public')->url($user->avatar)
+                                ? asset('storage/' . $user->avatar)
                                 : null,
             'department'  => $user->department,
             'programme'   => $user->programme,
@@ -81,7 +81,7 @@ class SettingsController extends Controller
 
         return response()->json([
             'message' => 'Avatar updated successfully',
-            'avatar'  => Storage::disk('public')->url($path)
+            'avatar'  => asset('storage/' . $path)
         ]);
     }
 
@@ -207,7 +207,7 @@ class SettingsController extends Controller
      * DELETE /api/settings/devices/{tokenId}
      * Logs out a specific device by revoking its token
      */
-    public function logoutDevice(Request $request, $tokenId)
+    public function logoutDevice(Request $request, int $tokenId)
     {
         $user = $request->user();
 
