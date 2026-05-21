@@ -7,6 +7,7 @@ use App\Http\Controllers\Api\DashboardController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\ApplicationController;
 use App\Http\Controllers\Api\DownloadController;
+use App\Http\Controllers\Api\SettingsController;
 use App\Http\Controllers\FormController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
@@ -60,9 +61,7 @@ Route::post('/form-fields', function (Request $request) {
 
 Route::get('/form/{id}', [FormController::class, 'show']);
 
-
 Route::post('/form/{id}/submit', [FormController::class, 'submit']);
-
 
 Route::get('/form/{id}/responses', [FormController::class, 'responses']);
 
@@ -97,12 +96,31 @@ Route::post('/login-custom', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
+    // ── SETTINGS ──────────────────────────────────────────────────────────
+    Route::prefix('settings')->group(function () {
 
+        // Profile
+        Route::get('/profile', [SettingsController::class, 'getProfile']);
+        Route::put('/profile', [SettingsController::class, 'updateProfile']);
+        Route::post('/avatar', [SettingsController::class, 'uploadAvatar']);
+        Route::delete('/avatar', [SettingsController::class, 'removeAvatar']);
+
+        // Notifications
+        Route::get('/notifications', [SettingsController::class, 'getNotifications']);
+        Route::put('/notifications', [SettingsController::class, 'updateNotifications']);
+        Route::post('/notifications/reset', [SettingsController::class, 'resetNotifications']);
+
+        // Connected devices
+        Route::get('/devices', [SettingsController::class, 'getDevices']);
+        Route::delete('/devices', [SettingsController::class, 'logoutAllOtherDevices']);
+        Route::delete('/devices/{tokenId}', [SettingsController::class, 'logoutDevice']);
+    });
+
+    // ── FILES & FOLDERS ───────────────────────────────────────────────────
     Route::get('/folders', [FileController::class, 'getFolders']);
     Route::post('/folder/create', [FileController::class, 'createFolder']);
-    Route::put('/folder/{id}', [FileController::class, 'renameFolder']);       // rename folder
-    Route::delete('/folder/{id}', [FileController::class, 'deleteFolder']);    // delete folder
-
+    Route::put('/folder/{id}', [FileController::class, 'renameFolder']);
+    Route::delete('/folder/{id}', [FileController::class, 'deleteFolder']);
 
     Route::get('/files/search', [FileController::class, 'searchFiles']);
     Route::get('/files/{folderId}', [FileController::class, 'getFiles']);
@@ -111,7 +129,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/file/{id}', [FileController::class, 'renameFile']);
     Route::delete('/file/{id}', [FileController::class, 'deleteFile']);
     Route::get('/file/download/{id}', [FileController::class, 'downloadFile']);
-
 
     Route::get('/storage-info', [FileController::class, 'storageInfo']);
 });
