@@ -98,6 +98,8 @@ const AdminApplication = () => {
   const [workflow, setWorkflow] = useState([]);
   const [roleSearch, setRoleSearch] = useState("");
 
+  console.log("Active form: ", activeForm);
+
   const addRoleToWorkflow = (role) =>
     setWorkflow((prev) => (prev.includes(role) ? prev : [...prev, role]));
   const filteredRoles = availableRoles.filter((role) =>
@@ -131,6 +133,8 @@ const AdminApplication = () => {
   };
 
   const openBuilder = (form) => {
+    console.log("opening builder", form);
+
     setActiveForm(form);
     setActiveTab("builder");
     if (form.rawFields && form.rawFields.length > 0) {
@@ -416,7 +420,7 @@ const AdminApplication = () => {
 
       {/* Modern Form Builder Modal */}
       {activeForm && (
-        <div className={styles.modalOverlay} onClick={closeBuilder}>
+        <div className={styles.modalOverlay}>
           <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
             {/* Modal Header */}
             <div className={styles.modalHeader}>

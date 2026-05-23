@@ -5,6 +5,8 @@ import toast from "react-hot-toast";
 
 const FormFill = () => {
   const { id } = useParams();
+  console.log("Form ID: ", id);
+
   const [form, setForm] = useState(null);
   const [answers, setAnswers] = useState({});
   const [errors, setErrors] = useState({});
@@ -112,7 +114,7 @@ const FormFill = () => {
     fetch(`http://localhost:8000/api/form/${id}`)
       .then((res) => res.json())
       .then((data) => {
-        setForm(data);
+        setForm({ ...data, fields: data.fields || [] });
       })
       .catch((err) => console.error(err));
   }, [id]);
@@ -195,7 +197,10 @@ const FormFill = () => {
             required={field.required}
           >
             <option value="">Select an option</option>
-            {field.options.map((opt, i) => (
+            {(Array.isArray(field.options)
+              ? field.options
+              : JSON.parse(field.options || "[]")
+            ).map((opt, i) => (
               <option key={i} value={opt}>
                 {opt}
               </option>
@@ -205,7 +210,10 @@ const FormFill = () => {
       case "radio":
         return (
           <div className={styles.radioGroup}>
-            {field.options.map((opt, i) => (
+            {(Array.isArray(field.options)
+              ? field.options
+              : JSON.parse(field.options || "[]")
+            ).map((opt, i) => (
               <label key={i} className={styles.radioLabel}>
                 <input
                   type="radio"
@@ -223,7 +231,10 @@ const FormFill = () => {
       case "checkbox":
         return (
           <div className={styles.checkboxGroup}>
-            {field.options.map((opt, i) => (
+            {(Array.isArray(field.options)
+              ? field.options
+              : JSON.parse(field.options || "[]")
+            ).map((opt, i) => (
               <label key={i} className={styles.checkboxLabel}>
                 <input
                   type="checkbox"
@@ -261,18 +272,21 @@ const FormFill = () => {
           )}
 
           <form onSubmit={handleSubmit} className={styles.form}>
-            {form.fields.map((field) => (
-              <div key={field.id} className={styles.fieldGroup}>
-                <label className={styles.label}>
-                  {field.label}
-                  {field.required && <span className={styles.required}>*</span>}
-                </label>
-                {renderField(field)}
-                {errors[field.id] && (
-                  <span className={styles.error}>{errors[field.id]}</span>
-                )}
-              </div>
-            ))}
+            {form.fields &&
+              form.fields.map((field) => (
+                <div key={field.id} className={styles.fieldGroup}>
+                  <label className={styles.label}>
+                    {field.label}
+                    {field.required && (
+                      <span className={styles.required}>*</span>
+                    )}
+                  </label>
+                  {renderField(field)}
+                  {errors[field.id] && (
+                    <span className={styles.error}>{errors[field.id]}</span>
+                  )}
+                </div>
+              ))}
 
             <button
               type="submit"

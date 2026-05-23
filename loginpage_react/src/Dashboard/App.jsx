@@ -1,5 +1,5 @@
 import React from "react";
-import {Routes, Route } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
 import Account from "./pages/Account";
@@ -8,7 +8,7 @@ import Settings from "./pages/Settings";
 import About from "./pages/About";
 import HelpAndSupport from "./pages/HelpAndSupport";
 import Files from "./pages/Files";
-import Application from "./pages/Applications"; // Student
+import Application from "./pages/ApplicationSubmitted"; // Student
 import AdminApplication from "./pages/AdminApplication";
 import FacultyApplication from "./pages/FacultyApplication"; //
 import Submissions from "./pages/Submissions";
@@ -18,9 +18,8 @@ import { Toaster } from "react-hot-toast";
 import "./style.css";
 import "./dashboard.css";
 
-
 export default function App() {
-  const role = "admin"; // change dynamically later
+  const role = ""; // change dynamically later
 
   return (
     <>

@@ -1,39 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./StudentSubmissions.module.css";
 
 const StudentSubmissions = () => {
-  const [openId, setOpenId] = useState(null);
+  const [submissions, setSubmissions] = useState([]);
 
-  const submissions = [
-    {
-      id: "SUB-001",
-      title: "Bonafide Certificate",
-      date: "28 March 2026",
-      status: "Pending",
-    },
-    {
-      id: "SUB-002",
-      title: "Transcript Request",
-      date: "25 March 2026",
-      status: "Approved",
-    },
-    {
-      id: "SUB-003",
-      title: "Hostel Clearance",
-      date: "24 March 2026",
-      status: "Rejected",
-    },
-    {
-      id: "SUB-004",
-      title: "Leave Application",
-      date: "23 March 2026",
-      status: "Pending",
-    },
-  ];
+  useEffect(() => {
+    fetch("http://127.0.0.1:8000/api/student/submissions")
+      .then((res) => res.json())
+      .then((data) => {
+        console.log("Api data : ", data);
 
-  const toggleRow = (id) => {
-    setOpenId(openId === id ? null : id);
-  };
+        if (Array.isArray(data)) {
+          setSubmissions(data);
+        } else if (data) {
+          setSubmissions([data]);
+        } else {
+          setSubmissions([]);
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setSubmissions([]);
+      });
+  }, []);
+
+  console.log("Submissions: ", submissions);
 
   return (
     <div className={styles.pageWrapper}>
@@ -50,48 +41,31 @@ const StudentSubmissions = () => {
 
           {/* BODY */}
           <div className={styles.tableBody}>
-            {submissions.map((item) => (
-              <React.Fragment key={item.id}>
-                {/* MAIN ROW */}
-                <div className={styles.row} onClick={() => toggleRow(item.id)}>
-                  <div>
-                    <strong>{item.title}</strong>
-                    <small>{item.id}</small>
-                  </div>
-
-                  <span>{item.date}</span>
-
-                  <span
-                    className={`${styles.status} ${styles[item.status.toLowerCase()]}`}
-                  >
-                    {item.status}
-                  </span>
-
-                  <span className={styles.expandIcon}>
-                    {openId === item.id ? "−" : "+"}
-                  </span>
-                </div>
-
-                {/* DROPDOWN */}
-                {openId === item.id && (
-                  <div className={styles.dropdown}>
-                    <div className={styles.workflow}>
-                      <div className={`${styles.step} ${styles.completed}`}>
-                        ✔ HOD Approval
-                      </div>
-
-                      <div className={`${styles.step} ${styles.current}`}>
-                        ● Academic Section (Current)
-                      </div>
-
-                      <div className={styles.step}>○ Dean Office</div>
-
-                      <div className={styles.step}>○ Completed</div>
+            {!submissions || submissions.length === 0 ? (
+              <div className={styles.emptyState}>
+                <p>No submissions yet</p>
+              </div>
+            ) : (
+              submissions.map((item) => (
+                <React.Fragment key={item.id}>
+                  {/* MAIN ROW */}
+                  <div className={styles.row}>
+                    <div>
+                      <strong>{item.form?.name}</strong>
+                      <small>SUB-{item.id}</small>
                     </div>
+
+                    <span>
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </span>
+
+                    <span className={`${styles.status} ${styles[item.status]}`}>
+                      {item.status}
+                    </span>
                   </div>
-                )}
-              </React.Fragment>
-            ))}
+                </React.Fragment>
+              ))
+            )}
           </div>
         </div>
       </div>

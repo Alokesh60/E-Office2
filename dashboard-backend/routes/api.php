@@ -12,8 +12,19 @@ use App\Http\Controllers\FormController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\SubmissionController;
+use App\Http\Controllers\ResponseController;
 
 use App\Models\Response;
+
+Route::post('/submission/action', [ResponseController::class, 'takeAction']);
+
+Route::get('/submission/{id}', function ($id) {
+    return \App\Models\Response::with('form')->findOrFail($id);
+});
+
+Route::get('/student/submissions', function () {
+    return \App\Models\Response::with('form')->get();
+});
 
 Route::post('/submission/{id}/send-back', [SubmissionController::class, 'sendBack']);
 
