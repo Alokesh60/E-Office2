@@ -2,19 +2,22 @@ import styles from "./About.module.css";
 
 const About = () => {
   return (
-    <div className={styles.aboutContainer}>
-      <div className={styles.aboutHeader}>
-        <h2 className={styles.aboutTitle}>About</h2>
+    <div className={styles.aboutPage}>
+      <div className={styles.aboutWrapper}>
 
-        <img
-          src="/images/About.png"
-          alt="About img"
-          className={styles.aboutImage}
-        />
-      </div>
+        <div className={styles.aboutCard}>
+          <div className={styles.aboutHeader}>
+            <h2 className={styles.aboutTitle}>About</h2>
 
-      <div className={styles.aboutContent}>
-        <p>
+            <img
+              src="/images/About.png"
+              alt="About img"
+              className={styles.aboutImage}
+            />
+          </div>
+
+          <div className={styles.aboutContent}>
+            <p>
           The E-Office platform is a digital solution designed to streamline
           communication and administrative processes for students of the
           National Institute of Technology Silchar. It enables students to
@@ -58,15 +61,20 @@ const About = () => {
           convenient administrative experience for both students and staff.
         </p>
         <p>This section demonstrated the implementation of the account management interface, highlighting its structure, usability, and integration within the overall E-Office system.</p>
-      </div>
-      <div className={styles.aboutFooter}>
-        <span className={styles.footerMain}>
-          Improving Efficiency, Transparency & Accountability
-        </span>
 
-        <span className={styles.footerSub}>
-          A Step towards Digital Governance for NIT Silchar
-        </span>
+          </div>
+
+          <div className={styles.aboutFooter}>
+            <span className={styles.footerMain}>
+              Improving Efficiency, Transparency & Accountability
+            </span>
+
+            <span className={styles.footerSub}>
+              A Step towards Digital Governance for NIT Silchar
+            </span>
+          </div>
+        </div>
+
       </div>
     </div>
   );

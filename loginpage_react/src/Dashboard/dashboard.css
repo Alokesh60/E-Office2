@@ -1,5 +1,11 @@
 /* ===== MAIN LAYOUT ===== */
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
 .main-container {
+  display: flex;
   width: 100%;
   min-height: 100vh;
   background-color: #DDE7F1;
@@ -13,8 +19,10 @@
 
 /* ===== CONTENT AREA ===== */
 .content-area {
-  margin-left: 80px;   /* 🔥 THIS IS THE KEY FIX */
+  margin-left: 80px;
   padding: 20px 40px;
+  width: calc(100% - 80px);  /* ← ADD THIS */
+  min-height: 100vh;
 }
 
 /* ===== ACTIVE LINK ===== */

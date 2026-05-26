@@ -1,25 +1,25 @@
-import React from "react";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import styles from "./Settings.module.css";
 
-const Settings = () => {
+const Settings = ({ role }) => {
   useEffect(() => {
     document.body.classList.add("settings-page-active");
     return () => document.body.classList.remove("settings-page-active");
   }, []);
+
   return (
     <div className={styles.settingsPage}>
       <div className={styles.header}>
         <div>
           <h1>Settings</h1>
-          <p className="settings_line">Manage your account settings and preferences</p>
+          <p>Manage your account settings and preferences</p>
         </div>
       </div>
 
       <div className={styles.settingsLayout}>
         {/* LEFT SIDE */}
         <div className={styles.leftColumn}>
-          <div className={styles.settingsCard}>
+          <div className={styles.card}>
             <h2>Profile Settings</h2>
 
             <div className={styles.profileTop}>
@@ -31,7 +31,12 @@ const Settings = () => {
 
               <div className={styles.profilename}>
                 <h4>Tony Stark</h4>
-                <p>ID: 24KX100</p>
+                {/* Conditionally render the ID based on role */}
+                {role === "student" ? (
+                  <p>ID: 24KX100</p>
+                ) : role === "faculty" ? (
+                  <p>Emp ID: FAC-1029</p>
+                ) : null}
 
                 <div className={styles.photoBtns}>
                   <button className={styles.secondaryBtn}>
@@ -48,25 +53,53 @@ const Settings = () => {
               />
             </div>
 
+            {/* Department is common to both */}
             <label>Department</label>
             <select>
-              <option>Computer Science</option>
+              <option>Computer Science and Engineering</option>
+              <option>Electronics and Communication Engineering</option>
+              <option>Electronics and Instrumentation Engineering</option>
               <option>Electrical Engineering</option>
               <option>Mechanical Engineering</option>
+              <option>Civil Engineering</option>
             </select>
 
-            <label>Programme</label>
-            <select>
-              <option>B.Tech</option>
-              <option>M.Tech</option>
-            </select>
+            {/* Conditionally render form fields based on role */}
+            {role === "student" ? (
+              <>
+                <label>Programme</label>
+                <select>
+                  <option>B.Tech</option>
+                  <option>M.Tech</option>
+                  <option>MBA</option>
+                  <option>PHd</option>
+                </select>
 
-            <label>Semester</label>
-            <select>
-              <option>1st Semester</option>
-              <option>3rd Semester</option>
-              <option>5th Semester</option>
-            </select>
+                <label>Semester</label>
+                <select>
+                  <option>1st Semester</option>
+                  <option>2ndt Semester</option>
+                  <option>3rd Semester</option>
+                  <option>4th Semester</option>
+                  <option>5th Semester</option>
+                </select>
+              </>
+            ) : role === "faculty" ? (
+              <>
+                <label>Designation</label>
+                <select>
+                  <option>Assistant Professor</option>
+                  <option>Associate Professor</option>
+                  <option>Professor</option>
+                </select>
+
+                <label>Cabin Allocation</label>
+                <select>
+                  <option>Room 402 - Main Block</option>
+                  <option>Room 105 - Annex</option>
+                </select>
+              </>
+            ) : null}
 
             <button className={styles.primaryBtn}>Update Profile</button>
           </div>

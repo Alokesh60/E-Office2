@@ -8,7 +8,7 @@ import Settings from "./pages/Settings";
 import About from "./pages/About";
 import HelpAndSupport from "./pages/HelpAndSupport";
 import Files from "./pages/Files";
-import Application from "./pages/Applications"; // Student
+import ApplicationSubmitted from "./pages/ApplicationSubmitted"; // Student
 import AdminApplication from "./pages/AdminApplication";
 import FacultyApplication from "./pages/FacultyApplication";
 import Submissions from "./pages/Submissions";
@@ -42,7 +42,7 @@ export default function App() {
               ) : role === "faculty" ? (
                 <Submissions />
               ) : (
-                <Application />
+                <ApplicationSubmitted />
               )
             }
           />
