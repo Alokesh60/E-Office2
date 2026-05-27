@@ -9,7 +9,7 @@ use App\Models\Application;
 
 class DownloadController extends Controller
 {
-    public function application(Request $request, $id)
+    public function application(Request $request, int $id)
     {
         $app = Application::where('user_id', $request->user()->id)
             ->findOrFail($id);

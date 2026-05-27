@@ -13,36 +13,61 @@ use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
-    public function index(Request $request, ApplicationStatsService $statsService)
+    /**
+     * Fetch public holidays from external API and normalise shape.
+     * Cached per year for 24 hours.
+     */
+    private function getHolidays(): \Illuminate\Support\Collection
     {
-        $userId = $request->user()->id;
-
-        // fetch holidays from calender api
-        $holidays = Cache::remember('holidays_' . now()->year, 86400, function () {
-
-            $response = Http::get("https://date.nager.at/api/v3/PublicHolidays/" . now()->year . "/IN");
+        return Cache::remember('holidays_' . now()->year, 86400, function () {
+            $response = Http::get(
+                "https://date.nager.at/api/v3/PublicHolidays/" . now()->year . "/IN"
+            );
 
             if (!$response->successful()) return collect([]);
 
             return collect($response->json())->map(function ($h) {
                 return [
-                    'title' => $h['localName'],
-                    'date' => $h['date'],
-                    'type' => 'holiday'
+                    'id'          => null,
+                    'title'       => $h['localName'],
+                    'description' => null,
+                    'date'        => $h['date'],
+                    'type'        => 'holiday',
+                    'user_id'     => null,
                 ];
             });
         });
+    }
 
-        // fetch calender events from db
-        $events = CalendarEvent::where(function ($q) use ($userId) {
+    /**
+     * Fetch DB calendar events for a user and normalise shape to match holidays.
+     * Includes global events (user_id = null) and user-specific events.
+     */
+    private function getDbEvents(int $userId): \Illuminate\Support\Collection
+    {
+        return CalendarEvent::where(function ($q) use ($userId) {
             $q->whereNull('user_id')
               ->orWhere('user_id', $userId);
-        })->get();
+        })->get()->map(function ($event) {
+            return [
+                'id'          => $event->id,
+                'title'       => $event->title,
+                'description' => $event->description,
+                'date'        => $event->date,
+                'type'        => $event->type,
+                'user_id'     => $event->user_id,
+            ];
+        });
+    }
 
-        
-        $calendar = $events->merge($holidays)
-                           ->sortBy('date')
-                           ->values();
+    public function index(Request $request, ApplicationStatsService $statsService)
+    {
+        $userId = $request->user()->id;
+
+        $calendar = $this->getDbEvents($userId)
+            ->merge($this->getHolidays())
+            ->sortBy('date')
+            ->values();
 
         return response()->json([
             'stats' => $statsService->getUserStats($userId),
@@ -61,11 +86,9 @@ class DashboardController extends Controller
                 ->limit(5)
                 ->get(),
 
-            'calendar' => $calendar
+            'calendar' => $calendar,
         ]);
     }
-
-    
 
     public function stats(Request $request, ApplicationStatsService $statsService)
     {
@@ -97,15 +120,18 @@ class DashboardController extends Controller
         );
     }
 
+    /**
+     * Returns merged DB events + holidays, same shape as index().
+     */
     public function calendar(Request $request)
     {
         $userId = $request->user()->id;
 
-        $events = CalendarEvent::where(function ($q) use ($userId) {
-            $q->whereNull('user_id')
-              ->orWhere('user_id', $userId);
-        })->get();
+        $calendar = $this->getDbEvents($userId)
+            ->merge($this->getHolidays())
+            ->sortBy('date')
+            ->values();
 
-        return response()->json($events);
+        return response()->json($calendar);
     }
 }

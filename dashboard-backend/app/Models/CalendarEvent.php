@@ -12,6 +12,9 @@ class CalendarEvent extends Model
         'type',
         'date',
         'user_id',
-        'application_id'
+    ];
+
+    protected $casts = [
+        'date' => 'date:Y-m-d',
     ];
 }
