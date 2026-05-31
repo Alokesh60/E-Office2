@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react';
-import Sidebar from './Sidebar';
-import Topbar from './Topbar';
-import { Outlet } from 'react-router-dom';
+import React, { useEffect } from "react";
+import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
+import { Outlet } from "react-router-dom";
 
 const DashboardLayout = () => {
   useEffect(() => {
@@ -10,10 +10,10 @@ const DashboardLayout = () => {
   }, []);
 
   return (
-    <div className="layout"> {/* 🔥 NEW */}
-
+    <div className="layout">
+      {" "}
+      {/* 🔥 NEW */}
       <Topbar />
-
       <div className="main-container">
         <Sidebar />
 
@@ -21,7 +21,6 @@ const DashboardLayout = () => {
           <Outlet />
         </main>
       </div>
-
     </div>
   );
 };

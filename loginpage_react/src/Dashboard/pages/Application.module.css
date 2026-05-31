@@ -1,10 +1,10 @@
 /* ===== Application Page ===== */
 
 .wrapper {
-  height: calc(100vh - 20px); /* adjust if topbar height differs */
+  /* height: 100vh; */
   display: flex;
   flex-direction: column;
-  padding: 20px;
+  /* padding: 30px 300px; */
 }
 
 /* ===== TOP ACTION BAR ===== */
@@ -12,7 +12,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
 }
 
 .heading {
@@ -42,7 +42,7 @@
   flex: 1;
   background: #d2dce6;
   border-radius: 20px;
-  padding: 28px 36px;
+  padding: 40px 80px 50px 50px;
   box-shadow: 0 4px 24px rgba(27, 68, 110, 0.07);
 
   display: flex;
@@ -86,8 +86,8 @@
   }
 
   .panel {
-    margin: 0 12px 16px 12px;
-    padding: 20px 16px;
+    /* margin: 100px 102px 16px 12px; */
+    /* padding: 20px 16px; */
   }
 }
 

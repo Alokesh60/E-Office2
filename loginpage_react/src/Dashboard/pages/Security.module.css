@@ -1,9 +1,9 @@
 .securityWrapper h1 {
   font-size: 32px;
-  margin-bottom: 20px;
+  margin-bottom: -5px;
 }
 .settingsPage {
-  height: calc(100vh - 120px); /* subtract topbar height */
+  min-height: 100%; /* subtract topbar height */
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -17,23 +17,24 @@
 
 .passwordCard,
 .twoFACard {
-    position: relative;
-  background: #dae2e9;
-  padding: 24px;
-  border-radius: 18px;
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.08);
+  padding: 0px 1px 20px 40px;
+  min-height: 100%;
+  box-sizing: border-box;
+  background: transparent;
+  position: relative;
+  z-index: 1;
 }
 
 .illustration {
-  width: 260px;           
+  width: 260px;
   display: block;
   margin: 0 auto 16px auto;
 }
 .passwordCard h3,
 .twoFACard h3 {
   font-size: 22px;
-    font-weight: 500;
-    margin-bottom: 2px;
+  font-weight: 500;
+  margin-bottom: 2px;
 }
 
 .passwordCard label {
@@ -63,8 +64,8 @@
 }
 
 .primaryBtn {
-      margin-top: 30px;
-    margin-bottom: 20px;
+  margin-top: 30px;
+  margin-bottom: 20px;
   background: #0b2e4f;
   color: white;
   padding: 10px 20px;
@@ -138,7 +139,7 @@
 
 .radioItem {
   display: flex;
-  align-items: center;   /* keeps radio + text on same line */
+  align-items: center; /* keeps radio + text on same line */
   gap: 14px;
   font-size: 55px;
   font-weight: 500;
@@ -149,7 +150,7 @@
 /* Make radio smaller */
 .radioItem input[type="radio"] {
   width: 30px;
-    height: 20px;
+  height: 20px;
   accent-color: #0b2e4f;
   cursor: pointer;
 }

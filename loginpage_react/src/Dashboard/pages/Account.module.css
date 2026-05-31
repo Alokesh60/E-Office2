@@ -7,7 +7,7 @@
 
 /* Content starts below topbar via padding-top only */
 .accountPage {
-  padding: 0px -1px 40px 40px;
+  padding: 0px 5px 60px 40px;
   min-height: 100%;
   box-sizing: border-box;
   background: transparent;

@@ -124,7 +124,6 @@ const Account = () => {
                   <input type="text" placeholder="Enter your student ID" />
                 </div>
 
-                <h4>Contact Information</h4>
                 <div className={styles.formGrid}>
                   <div>
                     <label>Phone Number</label>
