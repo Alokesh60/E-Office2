@@ -11,7 +11,12 @@ class Response extends Model
         return $this->hasMany(\App\Models\ApprovalLog::class);
     }
 
-    protected $fillable = ['form_id'];
+    protected $fillable = [
+        'form_id',
+        'user_id',
+        'status',
+        'current_step',
+    ];
 
     public function answers()
     {

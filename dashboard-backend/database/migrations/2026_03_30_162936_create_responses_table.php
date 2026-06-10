@@ -13,7 +13,19 @@ return new class extends Migration
     {
         Schema::create('responses', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('form_id')->constrained()->onDelete('cascade');
+
+            $table->foreignId('form_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->foreignId('user_id')
+                ->constrained()
+                ->onDelete('cascade');
+
+            $table->string('status')->default('pending');
+
+            $table->integer('current_step')->default(0);
+
             $table->timestamps();
         });
     }

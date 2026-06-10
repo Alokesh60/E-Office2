@@ -1,5 +1,5 @@
 <?php
-
+// api.php
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,34 +16,19 @@ use App\Http\Controllers\ResponseController;
 
 use App\Models\Response;
 
-Route::post('/submission/action', [ResponseController::class, 'takeAction']);
+Route::middleware('auth:sanctum')->get('/submissions', function (Request $request) {
 
-Route::get('/submission/{id}', function ($id) {
-    return \App\Models\Response::with('form')->findOrFail($id);
-});
-
-Route::get('/student/submissions', function () {
-    return \App\Models\Response::with('form')->get();
-});
-
-Route::post('/submission/{id}/send-back', [SubmissionController::class, 'sendBack']);
-
-Route::post('/submission/{id}/approve', [SubmissionController::class, 'approve']);
-Route::post('/submission/{id}/reject', [SubmissionController::class, 'reject']);
-
-Route::post('/submission/{id}/forward', [SubmissionController::class, 'forward']);
-
-Route::get('/submissions', function () {
-    $role = 'dean_student_welfare';
-    //$role = 'warden'; // Example role, replace with actual role logic
-    // dean_student_welfare
+    $role = $request->user()->role;
 
     return Response::with(['form', 'answers.field'])
         ->get()
         ->filter(function ($submission) use ($role) {
+
             $workflow = $submission->form->workflow;
 
-            if (!$workflow) return false;
+            if (!$workflow) {
+                return false;
+            }
 
             $currentStep = $submission->current_step;
 
@@ -52,6 +37,30 @@ Route::get('/submissions', function () {
             return $currentRole === $role;
         })
         ->values();
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+
+    Route::post('/submission/action', [ResponseController::class, 'takeAction']);
+
+    Route::get('/submission/{id}', function ($id) {
+        return \App\Models\Response::with('form')->findOrFail($id);
+    });
+
+    Route::get('/student/submissions', function (Request $request) {
+
+        return \App\Models\Response::with('form')
+            ->where('user_id', $request->user()->id)
+            ->get();
+    });
+
+    Route::post('/submission/{id}/send-back', [SubmissionController::class, 'sendBack']);
+
+    Route::post('/submission/{id}/approve', [SubmissionController::class, 'approve']);
+
+    Route::post('/submission/{id}/reject', [SubmissionController::class, 'reject']);
+
+    Route::post('/submission/{id}/forward', [SubmissionController::class, 'forward']);
 });
 
 Route::delete('/forms/{id}/fields', [FormController::class, 'deleteFields']);

@@ -1,5 +1,5 @@
 <?php
-
+// create_forms_table.php
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -17,6 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->foreignId('created_by')->constrained('users');
             $table->boolean('is_active')->default(true);
+            $table->json('workflow')->nullable();
             $table->timestamps();
         });
     }
