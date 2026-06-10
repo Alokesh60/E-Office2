@@ -1,71 +1,215 @@
-/* ===== MAIN LAYOUT ===== */
-.main-container {
-  width: 100%;
+/* ================= RESET ================= */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Inter", sans-serif;
+  background-color: #dde7f1;
+  color: #02010d;
   min-height: 100vh;
-  background-color: #DDE7F1;
+  overflow-x: hidden;
 }
 
-/* ===== SIDEBAR WRAPPER ===== */
+/* ================= WRAPPER ================= */
+.dashboard-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ================= SIDEBAR ================= */
 .sidebar {
+  position: fixed;
+  left: 0;
+  top: 140px;
+  width: 120px;
+  height: 800px;
+  background: linear-gradient(180deg, #043059 0%, #022544 100%);
+  border-radius: 72px 0 0 72px;
+  z-index: 1000;
+  box-shadow: 0 24px 48px rgba(2, 37, 68, 0.28);
+}
+
+.sidebar-link {
+  width: 40px;
+  height: 40px;
+  margin: 20px auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  border-radius: 8px;
+}
+
+.sidebar-link.active,
+.sidebar-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ================= MAIN ================= */
+.main-content {
+  margin-left: 120px;
+  width: calc(100% - 120px);
+}
+
+/* ================= TOPBAR ================= */
+.topbar {
+  padding: 20px 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.institute-logo {
   width: 80px;
-  flex-shrink: 0;
+  height: 80px;
 }
 
-/* ===== CONTENT AREA ===== */
-.content-area {
-  margin-left: 80px;   /* 🔥 THIS IS THE KEY FIX */
-  padding: 20px 40px;
+.search-bar {
+  width: 600px;
+  display: flex;
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* ===== ACTIVE LINK ===== */
-.active-link {
-  background-color: var(--white-color);
+.search-input {
+  flex: 1;
+  border: none;
+  padding: 12px;
+  font-size: 18px;
 }
 
-.active-link i {
-  color: var(--first-color);
+.search-button {
+  background: #022544;
+  color: #fff;
+  border: none;
+  padding: 0 20px;
 }
 
-/* ===== DASHBOARD GRID ===== */
+/* ================= GRID ================= */
+.dashboard-container {
+  padding: 20px 50px;
+}
+
 .dashboard-grid {
   display: grid;
-  grid-template-columns: 1fr 0.8fr 1.2fr 0.8fr;
-  grid-template-areas:
-    "profile announcement announcement stats"
-    "completion announcement announcement stats"
-    "calendar quick recent recent";
-  gap: 35px;
+  grid-template-columns: 480px 1fr 320px;
+  grid-template-rows: auto auto auto;
+  gap: 30px;
 }
 
-/* GRID AREAS */
-.profile-area { grid-area: profile; }
-.completion-area { grid-area: completion; }
-.announcement-area { grid-area: announcement; }
-.stats-area { grid-area: stats; }
-.calendar-area { grid-area: calendar; }
-.quick-area { grid-area: quick; }
-.recent-area { grid-area: recent; }
-
-.dashboard-grid > * {
-  width: 100%;
+/* ================= CARD BASE ================= */
+.card {
+  background: #e9f0f8;
+  border-radius: 25px;
+  padding: 25px;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
 }
 
-/* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
+/* ================= PROFILE ================= */
+.profile-card {
+  grid-column: 1;
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.profile-avatar {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+
+.profile-name {
+  font-size: 30px;
+  font-weight: 600;
+}
+
+.profile-id {
+  font-size: 15px;
+  color: #022544;
+}
+
+.edit-profile-btn {
+  background: none;
+  border: none;
+  color: #022544;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+/* ================= PROGRESS ================= */
+.profile-completion-card {
+  grid-column: 1;
+}
+
+.complete-now-btn {
+  margin-top: 10px;
+  background: #022544;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 20px;
+}
+
+/* ================= ANNOUNCEMENT ================= */
+.announcement-card {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  background: linear-gradient(180deg, #5396c3, #1f4f80);
+  color: #fff;
+  min-height: 380px;
+}
+
+/* ================= STATS ================= */
+.application-stats-card {
+  grid-column: 3;
+  grid-row: 1 / span 2;
+}
+
+/* ================= CALENDAR ================= */
+.calendar-card {
+  grid-column: 1;
+}
+
+/* ================= QUICK ACCESS ================= */
+.quick-access-card {
+  grid-column: 2;
+}
+
+.quick-access-item {
+  background: #c7daf0;
+  padding: 25px;
+  border-radius: 25px;
+  margin-bottom: 15px;
+  text-align: center;
+  font-size: 22px;
+}
+
+/* ================= RECENT ================= */
+.recent-activities-card {
+  grid-column: 3;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .main-content {
+    margin-left: 0;
+    width: 100%;
   }
 
   .sidebar {
+    position: relative;
     width: 100%;
-  }
-
-  .content-area {
-    width: 100%;
-    padding: 15px;
-  }
-
-  .dashboard-grid {
-    grid-template-columns: 1fr;
+    height: auto;
+    border-radius: 0;
   }
 }

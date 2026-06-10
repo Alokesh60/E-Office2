@@ -6,16 +6,33 @@ use App\Models\User;
 
 class ProfileCompletionService
 {
-    public function calculate(User $user)
+    /**
+     * Each field carries equal weight.
+     * Only fields that exist in the users table are checked.
+     */
+    private array $fields = [
+        'name',
+        'email',
+        'avatar',
+        'department',
+        'programme',
+        'semester',
+        'student_id',
+    ];
+
+    public function calculate(User $user): int
     {
-        $score = 0;
+        $total  = count($this->fields);
+        $filled = 0;
 
-        if ($user->email) $score += 20;
-        if ($user->address) $score += 20;
-        if ($user->phone) $score += 20;
-        if ($user->avatar) $score += 20;
-        if ($user->signature_sample) $score += 20;
+        foreach ($this->fields as $field) {
+            if (!empty($user->{$field})) {
+                $filled++;
+            }
+        }
 
-        return $score;
+        if ($total === 0) return 0;
+
+        return (int) round(($filled / $total) * 100);
     }
 }
