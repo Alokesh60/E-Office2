@@ -45,7 +45,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/submission/action', [ResponseController::class, 'takeAction']);
 
     Route::get('/submission/{id}', function ($id) {
-        return \App\Models\Response::with('form')->findOrFail($id);
+        return \App\Models\Response::with(['form', 'answers.field', 'logs'])->findOrFail($id);
     });
 
     Route::get('/student/submissions', function (Request $request) {

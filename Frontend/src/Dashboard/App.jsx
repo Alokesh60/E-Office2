@@ -14,6 +14,7 @@ import FacultyApplication from "./pages/FacultyApplication"; //
 import Submissions from "./pages/Submissions";
 import FormFill from "./pages/FormFill";
 import StudentSubmissions from "./pages/StudentSubmissions";
+import StudentSubmissionDetails from "./pages/StudentSubmissionDetails";
 import { Toaster } from "react-hot-toast";
 import "./style.css";
 import "./dashboard.css";
@@ -62,6 +63,7 @@ export default function App() {
             }
           />
           <Route path="student-submissions" element={<StudentSubmissions />} />
+          <Route path="student-submissions/:id" element={<StudentSubmissionDetails />} />
 
           <Route path="files" element={<Files />} />
           <Route path="settings" element={<Settings />} />

@@ -25,6 +25,8 @@ class SettingsController extends Controller
             'id'          => $user->id,
             'name'        => $user->name,
             'email'       => $user->email,
+            'role'        => $user->role,
+            'designation' => $user->designation,
             'student_id'  => $user->student_id,
             'avatar'      => $user->avatar
                                 ? asset('storage/' . $user->avatar)
@@ -46,11 +48,17 @@ class SettingsController extends Controller
             'department'  => 'sometimes|string|max:255',
             'programme'   => 'sometimes|string|max:255',
             'semester'    => 'sometimes|string|max:255',
+            'student_id'  => 'sometimes|string|max:255',
         ]);
 
         $user = $request->user();
 
-        $user->update($request->only('name', 'department', 'programme', 'semester'));
+        $updateFields = ['name', 'department', 'programme', 'semester'];
+        if (empty($user->student_id) && $request->has('student_id')) {
+            $updateFields[] = 'student_id';
+        }
+
+        $user->update($request->only($updateFields));
 
         return response()->json([
             'message' => 'Profile updated successfully',

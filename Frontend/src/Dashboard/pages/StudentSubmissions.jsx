@@ -1,12 +1,26 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styles from "./StudentSubmissions.module.css";
 
 const StudentSubmissions = () => {
   const [submissions, setSubmissions] = useState([]);
+  const navigate = useNavigate();
 
   useEffect(() => {
-    fetch("http://127.0.0.1:8000/api/student/submissions")
-      .then((res) => res.json())
+    fetch("http://127.0.0.1:8000/api/student/submissions", {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Accept: "application/json",
+      },
+    })
+      .then((res) => {
+        if (res.status === 401) {
+          alert("Session expired. Please login again.");
+          window.location.href = "/";
+          throw new Error("Unauthorized");
+        }
+        return res.json();
+      })
       .then((data) => {
         console.log("Api data : ", data);
 
@@ -49,7 +63,11 @@ const StudentSubmissions = () => {
               submissions.map((item) => (
                 <React.Fragment key={item.id}>
                   {/* MAIN ROW */}
-                  <div className={styles.row}>
+                  <div
+                    className={styles.row}
+                    onClick={() => navigate(`/dashboard/student-submissions/${item.id}`)}
+                    style={{ cursor: "pointer" }}
+                  >
                     <div>
                       <strong>{item.form?.name}</strong>
                       <small>SUB-{item.id}</small>
@@ -74,3 +92,4 @@ const StudentSubmissions = () => {
 };
 
 export default StudentSubmissions;
+
