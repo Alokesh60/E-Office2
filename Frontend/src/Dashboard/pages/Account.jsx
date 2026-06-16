@@ -146,6 +146,7 @@ const Account = () => {
 
     const payload = {
       name: profile.name,
+      phone: profile.phone || "",
     };
 
     if (profile.role === "student" || profile.role === "staff") {
@@ -386,6 +387,17 @@ const Account = () => {
                         />
                       </div>
 
+                      <div>
+                        <label>Phone Number</label>
+                        <input
+                          type="tel"
+                          value={profile.phone || ""}
+                          placeholder="Enter your phone number (e.g. +91 98765 43210)"
+                          onChange={(e) => handleInputChange("phone", e.target.value)}
+                          disabled={saving}
+                        />
+                      </div>
+
                       {/* CONDITIONAL FIELD: Student ID */}
                       {isStudent && (
                         <div>
@@ -503,7 +515,7 @@ const Account = () => {
               </>
             )}
 
-            <Outlet />
+            <Outlet context={{ profile, fetchProfile }} />
           </div>
         </div>
       </div>

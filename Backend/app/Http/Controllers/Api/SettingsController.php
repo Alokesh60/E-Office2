@@ -34,12 +34,13 @@ class SettingsController extends Controller
             'department'  => $user->department,
             'programme'   => $user->programme,
             'semester'    => $user->semester,
+            'phone'       => $user->phone,
         ]);
     }
 
     /**
      * PUT /api/settings/profile
-     * Updates department, programme, semester, name
+     * Updates department, programme, semester, name, phone
      */
     public function updateProfile(Request $request)
     {
@@ -49,11 +50,12 @@ class SettingsController extends Controller
             'programme'   => 'sometimes|string|max:255',
             'semester'    => 'sometimes|string|max:255',
             'student_id'  => 'sometimes|string|max:255',
+            'phone'       => 'sometimes|string|max:255',
         ]);
 
         $user = $request->user();
 
-        $updateFields = ['name', 'department', 'programme', 'semester'];
+        $updateFields = ['name', 'department', 'programme', 'semester', 'phone'];
         if (empty($user->student_id) && $request->has('student_id')) {
             $updateFields[] = 'student_id';
         }

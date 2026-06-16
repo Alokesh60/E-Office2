@@ -1,8 +1,11 @@
 import React, { useState } from "react";
+import { useOutletContext } from "react-router-dom";
 import styles from "./Security.module.css";
 import toast from "react-hot-toast";
 
 const Security = () => {
+  const { profile } = useOutletContext();
+
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -260,6 +263,12 @@ const Security = () => {
             </label>
           </div>
 
+          {twoFAEnabled && authMethod === "sms" && !profile?.phone && (
+            <p style={{ color: "#e11d48", fontSize: "13px", marginTop: "-10px", marginBottom: "15px", fontWeight: "500" }}>
+              ⚠️ Please configure your Phone Number in the Account Settings tab to receive SMS codes.
+            </p>
+          )}
+
           <div className={styles.authMethods}>
             <label className={styles.radioItem}>
               <input
@@ -296,10 +305,33 @@ const Security = () => {
         <div className={styles.modalOverlay}>
           <div className={styles.modalContent}>
             <h3>Security Verification</h3>
-            <p>
+            <p style={{ marginBottom: "12px" }}>
               A 6-digit verification code has been sent to your registered{" "}
-              {authMethod === "sms" ? "mobile number" : "email address"}. Please enter the code below to authorize this password update.
+              {authMethod === "sms" ? (
+                <>
+                  mobile number: <strong>{profile?.phone || "(Not set - please add it in Account tab)"}</strong>
+                </>
+              ) : (
+                <>
+                  email address: <strong>{profile?.email || "N/A"}</strong>
+                </>
+              )}. Please enter the code below to authorize this password update.
             </p>
+
+            <div style={{
+              background: "#f1f5f9",
+              border: "1px solid #cbd5e1",
+              padding: "10px 14px",
+              borderRadius: "8px",
+              fontSize: "13px",
+              color: "#334155",
+              marginBottom: "20px",
+              textAlign: "center",
+              fontWeight: "500"
+            }}>
+              🔑 <strong>Debug OTP Code:</strong> <span style={{ fontFamily: "monospace", fontSize: "16px", letterSpacing: "1px", color: "#0b2e4f", marginLeft: "4px" }}>{generatedOTP}</span>
+            </div>
+
             <form onSubmit={handleOTPVerify}>
               <input
                 type="text"
