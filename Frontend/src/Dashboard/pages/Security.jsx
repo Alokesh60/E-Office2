@@ -15,6 +15,23 @@ const Security = () => {
   const [twoFAEnabled, setTwoFAEnabled] = useState(false);
   const [authMethod, setAuthMethod] = useState("sms");
 
+  const getPasswordStrength = (pwd) => {
+    if (!pwd) return null;
+    if (pwd.length < 8) {
+      return { label: "Weak (minimum 8 characters required)", color: "#ef4444" };
+    }
+    const hasNumbers = /\d/.test(pwd);
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasSpecial = /[!@#$%^&*(),.?":{}|<>]/.test(pwd);
+    const score = [hasNumbers, hasUpper, hasSpecial].filter(Boolean).length;
+
+    if (score === 3) return { label: "Strong password", color: "#22c55e" };
+    if (score === 2) return { label: "Medium password", color: "#f97316" };
+    return { label: "Weak password (add numbers, uppercase, or special characters)", color: "#ef4444" };
+  };
+
+  const strength = getPasswordStrength(newPassword);
+
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
 
@@ -132,6 +149,11 @@ const Security = () => {
               onClick={() => setShowNew(!showNew)}
             />
           </div>
+          {strength && (
+            <span style={{ fontSize: "13px", color: strength.color, marginTop: "6px", display: "block", fontWeight: "500" }}>
+              {strength.label}
+            </span>
+          )}
 
           <label>Confirm New Password</label>
           <div className={styles.inputGroup}>
@@ -148,6 +170,17 @@ const Security = () => {
               onClick={() => setShowConfirm(!showConfirm)}
             />
           </div>
+          {confirmPassword && (
+            <span style={{
+              fontSize: "13px",
+              color: newPassword === confirmPassword ? "#22c55e" : "#ef4444",
+              marginTop: "6px",
+              display: "block",
+              fontWeight: "500"
+            }}>
+              {newPassword === confirmPassword ? "✔ Passwords match" : "✘ Passwords do not match"}
+            </span>
+          )}
 
           <button type="submit" className={styles.primaryBtn} disabled={saving}>
             <i className="ri-lock-line" /> {saving ? "Updating..." : "Update Password"}
