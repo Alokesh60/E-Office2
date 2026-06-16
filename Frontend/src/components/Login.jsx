@@ -14,6 +14,8 @@ function Login() {
   const [role, setRole] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState(""); // ✅ added
+  const [studentId, setStudentId] = useState("");
+  const [designation, setDesignation] = useState("");
 
   // LOGIN FUNCTION
   const handleLogin = async (e) => {
@@ -64,18 +66,26 @@ function Login() {
       return;
     }
 
+    const payload = {
+      username,
+      email,
+      role,
+      password,
+    };
+
+    if (role === "student") {
+      payload.student_id = studentId;
+    } else if (role === "staff") {
+      payload.designation = designation;
+    }
+
     try {
       const res = await fetch("http://127.0.0.1:8000/api/custom-register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          username,
-          email,
-          role,
-          password,
-        }),
+        body: JSON.stringify(payload),
       });
 
       const data = await res.json();
@@ -84,6 +94,13 @@ function Login() {
 
       if (data.status === "success") {
         alert("Registered successfully!");
+        setUsername("");
+        setEmail("");
+        setRole("");
+        setStudentId("");
+        setDesignation("");
+        setPassword("");
+        setConfirmPassword("");
         setIsActive(false); // switch to login
       } else {
         alert("Registration failed");
@@ -158,21 +175,57 @@ function Login() {
               <select
                 name="role"
                 required
-                defaultValue=""
-                onChange={(e) => setRole(e.target.value)}
+                value={role}
+                onChange={(e) => {
+                  setRole(e.target.value);
+                  setStudentId("");
+                  setDesignation("");
+                }}
               >
                 <option value="" disabled hidden>
                   Select Role
                 </option>
                 <option value="student">Student</option>
-                <option value="finance-officer">Finance Officer</option>
-                <option value="dean">Dean</option>
-                <option value="academic-administrator">
-                  Academic Administrator
-                </option>
+                <option value="staff">Staff / Faculty</option>
+                <option value="admin">Administrator</option>
               </select>
               <i className="bx bxs-user-detail"></i>
             </div>
+
+            {/* CONDITIONAL FIELD: Student ID */}
+            {role === "student" && (
+              <div className="input-box">
+                <input
+                  type="text"
+                  placeholder="Student ID / Roll Number"
+                  value={studentId}
+                  onChange={(e) => setStudentId(e.target.value)}
+                  required
+                />
+                <i className="bx bx-id-card"></i>
+              </div>
+            )}
+
+            {/* CONDITIONAL FIELD: Staff Designation */}
+            {role === "staff" && (
+              <div className="input-box">
+                <select
+                  name="designation"
+                  required
+                  value={designation}
+                  onChange={(e) => setDesignation(e.target.value)}
+                >
+                  <option value="" disabled hidden>
+                    Select Designation
+                  </option>
+                  <option value="warden">Warden</option>
+                  <option value="accounts_officer">Accounts Officer</option>
+                  <option value="dean_academic">Dean Academic</option>
+                  <option value="dean_student_welfare">Dean Student Welfare</option>
+                </select>
+                <i className="bx bx-briefcase"></i>
+              </div>
+            )}
 
             <div className="input-box">
               <input

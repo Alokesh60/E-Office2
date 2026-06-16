@@ -17,6 +17,7 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email'],
             'role' => ['required', Rule::in(['student', 'staff', 'admin'])],
             'designation' => ['required_if:role,staff', 'nullable', 'string', 'max:255'],
+            'student_id' => ['required_if:role,student', 'nullable', 'string', 'max:255'],
             'password' => ['required', 'string'],
         ]);
 
@@ -25,6 +26,7 @@ class AuthController extends Controller
             'email' => $request->email,
             'role' => $request->role,
             'designation' => $request->role === 'staff' ? $request->designation : null,
+            'student_id' => $request->role === 'student' ? $request->student_id : null,
             'password' => $request->password,
         ]);
 
