@@ -209,20 +209,13 @@ function Login() {
             {/* CONDITIONAL FIELD: Staff Designation */}
             {role === "staff" && (
               <div className="input-box">
-                <select
-                  name="designation"
-                  required
+                <input
+                  type="text"
+                  placeholder="Designation (e.g. Dean Academic)"
                   value={designation}
                   onChange={(e) => setDesignation(e.target.value)}
-                >
-                  <option value="" disabled hidden>
-                    Select Designation
-                  </option>
-                  <option value="warden">Warden</option>
-                  <option value="accounts_officer">Accounts Officer</option>
-                  <option value="dean_academic">Dean Academic</option>
-                  <option value="dean_student_welfare">Dean Student Welfare</option>
-                </select>
+                  required
+                />
                 <i className="bx bx-briefcase"></i>
               </div>
             )}
