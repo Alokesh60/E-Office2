@@ -131,6 +131,15 @@ class SettingsController extends Controller
             ], 422);
         }
 
+        if (\Illuminate\Support\Facades\Hash::check($request->new_password, $user->password)) {
+            return response()->json([
+                'message' => 'The new password cannot be the same as your current password.',
+                'errors'  => [
+                    'new_password' => ['The new password cannot be the same as your current password.']
+                ]
+            ], 422);
+        }
+
         $user->update([
             'password' => \Illuminate\Support\Facades\Hash::make($request->new_password)
         ]);
