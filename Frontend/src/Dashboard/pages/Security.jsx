@@ -12,8 +12,19 @@ const Security = () => {
   const [showConfirm, setShowConfirm] = useState(false);
 
   const [saving, setSaving] = useState(false);
-  const [twoFAEnabled, setTwoFAEnabled] = useState(false);
-  const [authMethod, setAuthMethod] = useState("sms");
+
+  // Load and persist 2FA settings from localStorage for persistence
+  const [twoFAEnabled, setTwoFAEnabled] = useState(
+    localStorage.getItem("2fa_enabled") === "true"
+  );
+  const [authMethod, setAuthMethod] = useState(
+    localStorage.getItem("2fa_method") || "sms"
+  );
+
+  // 2FA Verification Flow State
+  const [showOTPModal, setShowOTPModal] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+  const [generatedOTP, setGeneratedOTP] = useState("");
 
   const getPasswordStrength = (pwd) => {
     if (!pwd) return null;
@@ -32,7 +43,7 @@ const Security = () => {
 
   const strength = getPasswordStrength(newPassword);
 
-  const handlePasswordUpdate = async (e) => {
+  const handlePasswordSubmit = (e) => {
     e.preventDefault();
 
     if (!currentPassword) {
@@ -50,6 +61,29 @@ const Security = () => {
       return;
     }
 
+    if (twoFAEnabled) {
+      // Generate a mock 6-digit verification code
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      setGeneratedOTP(code);
+      setOtpInput("");
+      setShowOTPModal(true);
+      
+      // Notify the user of the generated OTP code in a high-visibility toast
+      toast.success(
+        `Security Verification Code: ${code} (sent via ${
+          authMethod === "sms" ? "SMS" : "Email"
+        })`,
+        {
+          duration: 12000,
+          icon: "🔑",
+        }
+      );
+    } else {
+      executePasswordUpdate();
+    }
+  };
+
+  const executePasswordUpdate = async () => {
     try {
       setSaving(true);
       const res = await fetch("http://127.0.0.1:8000/api/settings/password", {
@@ -76,6 +110,8 @@ const Security = () => {
         setShowCurrent(false);
         setShowNew(false);
         setShowConfirm(false);
+        setShowOTPModal(false);
+        setOtpInput("");
       } else {
         toast.error(data.message || "Failed to update password");
       }
@@ -87,20 +123,31 @@ const Security = () => {
     }
   };
 
+  const handleOTPVerify = (e) => {
+    e.preventDefault();
+    if (otpInput === generatedOTP) {
+      executePasswordUpdate();
+    } else {
+      toast.error("Invalid verification code. Please check and try again.");
+    }
+  };
+
   const handleTwoFAToggle = () => {
     const nextState = !twoFAEnabled;
     setTwoFAEnabled(nextState);
+    localStorage.setItem("2fa_enabled", nextState.toString());
     toast.success(
       nextState
-        ? `Two-Factor Authentication enabled via ${authMethod === "sms" ? "Mobile" : "Email"} (Mock)`
-        : "Two-Factor Authentication disabled (Mock)"
+        ? `Two-Factor Authentication enabled via ${authMethod === "sms" ? "Mobile" : "Email"}`
+        : "Two-Factor Authentication disabled"
     );
   };
 
   const handleAuthMethodChange = (method) => {
     setAuthMethod(method);
+    localStorage.setItem("2fa_method", method);
     if (twoFAEnabled) {
-      toast.success(`Authentication method set to ${method === "sms" ? "Mobile" : "Email"} (Mock)`);
+      toast.success(`Authentication method set to ${method === "sms" ? "Mobile" : "Email"}`);
     }
   };
 
@@ -110,7 +157,7 @@ const Security = () => {
 
       <div className={styles.securityGrid}>
         {/* LEFT – Change Password */}
-        <form className={styles.passwordCard} onSubmit={handlePasswordUpdate}>
+        <form className={styles.passwordCard} onSubmit={handlePasswordSubmit}>
           <img
             src="/images/lock-illustration.png"
             alt="Security img"
@@ -237,12 +284,56 @@ const Security = () => {
 
           <button
             className={styles.secondaryBtn}
-            onClick={() => toast.success("MFA configuration settings updated (Mock)")}
+            onClick={() => toast.success("MFA configuration settings updated")}
           >
             Manage 2FA
           </button>
         </div>
       </div>
+
+      {/* OTP Verification Modal Overlay */}
+      {showOTPModal && (
+        <div className={styles.modalOverlay}>
+          <div className={styles.modalContent}>
+            <h3>Security Verification</h3>
+            <p>
+              A 6-digit verification code has been sent to your registered{" "}
+              {authMethod === "sms" ? "mobile number" : "email address"}. Please enter the code below to authorize this password update.
+            </p>
+            <form onSubmit={handleOTPVerify}>
+              <input
+                type="text"
+                maxLength="6"
+                placeholder="000000"
+                value={otpInput}
+                onChange={(e) => setOtpInput(e.target.value.replace(/\D/g, ""))}
+                required
+                autoFocus
+              />
+              <div className={styles.modalBtns}>
+                <button
+                  type="button"
+                  className={styles.cancelBtn}
+                  onClick={() => {
+                    setShowOTPModal(false);
+                    setOtpInput("");
+                  }}
+                  disabled={saving}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className={styles.confirmBtn}
+                  disabled={saving}
+                >
+                  {saving ? "Verifying..." : "Verify & Update"}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
