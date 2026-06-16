@@ -109,6 +109,37 @@ class SettingsController extends Controller
         return response()->json(['message' => 'Avatar removed successfully']);
     }
 
+    /**
+     * PUT /api/settings/password
+     * Updates the user's password after verifying the current password
+     */
+    public function updatePassword(Request $request)
+    {
+        $request->validate([
+            'current_password' => 'required|string',
+            'new_password'     => 'required|string|min:8|confirmed',
+        ]);
+
+        $user = $request->user();
+
+        if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
+            return response()->json([
+                'message' => 'The provided password does not match your current password.',
+                'errors'  => [
+                    'current_password' => ['The provided password does not match your current password.']
+                ]
+            ], 422);
+        }
+
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($request->new_password)
+        ]);
+
+        return response()->json([
+            'message' => 'Password updated successfully'
+        ]);
+    }
+
     // ─────────────────────────────────────────
     // NOTIFICATION SETTINGS
     // ─────────────────────────────────────────

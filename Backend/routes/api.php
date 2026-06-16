@@ -128,6 +128,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/profile', [SettingsController::class, 'updateProfile']);
         Route::post('/avatar', [SettingsController::class, 'uploadAvatar']);
         Route::delete('/avatar', [SettingsController::class, 'removeAvatar']);
+        Route::put('/password', [SettingsController::class, 'updatePassword']);
 
         // Notifications
         Route::get('/notifications', [SettingsController::class, 'getNotifications']);
