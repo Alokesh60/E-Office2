@@ -30,7 +30,6 @@ export default function App() {
           <Route index element={<Dashboard />} />
 
           <Route path="account" element={<Account />}>
-            <Route path="security" element={<Security />} />
             <Route path="about" element={<About />} />
             <Route path="help" element={<HelpAndSupport />} />
           </Route>
@@ -66,7 +65,9 @@ export default function App() {
           <Route path="student-submissions/:id" element={<StudentSubmissionDetails />} />
 
           <Route path="files" element={<Files />} />
-          <Route path="settings" element={<Settings />} />
+          <Route path="settings" element={<Settings />}>
+            <Route path="security" element={<Security />} />
+          </Route>
         </Route>
       </Routes>
     </>

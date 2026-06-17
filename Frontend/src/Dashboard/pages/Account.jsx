@@ -241,20 +241,6 @@ const Account = () => {
 
               <li>
                 <NavLink
-                  to="security"
-                  className={({ isActive }) =>
-                    isActive
-                      ? `${styles.navItem} ${styles.active}`
-                      : styles.navItem
-                  }
-                >
-                  <i className="ri-lock-line" />
-                  <span>Security & Password</span>
-                </NavLink>
-              </li>
-
-              <li>
-                <NavLink
                   to="help"
                   className={({ isActive }) =>
                     isActive
