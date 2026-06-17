@@ -1,16 +1,29 @@
 import React, { useState } from "react";
 import styles from "./CalendarCard.module.css";
-const CalendarCard = () => {
+
+const CalendarCard = ({ calendarEvents }) => {
   const today = new Date();
 
   const [currentMonth, setCurrentMonth] = useState(today.getMonth());
   const [currentYear, setCurrentYear] = useState(today.getFullYear());
 
-  // Example events
-  const events = {
-    holiday: [5],
-    deadline: [23],
-  };
+  // Filter events matching the current year and month dynamically
+  const holidays = [];
+  const deadlines = [];
+
+  if (calendarEvents && Array.isArray(calendarEvents)) {
+    calendarEvents.forEach((evt) => {
+      if (!evt.date) return;
+      const d = new Date(evt.date);
+      if (d.getMonth() === currentMonth && d.getFullYear() === currentYear) {
+        if (evt.type === "holiday") {
+          holidays.push(d.getDate());
+        } else if (evt.type === "deadline") {
+          deadlines.push(d.getDate());
+        }
+      }
+    });
+  }
 
   const firstDay = new Date(currentYear, currentMonth, 1);
   const lastDate = new Date(currentYear, currentMonth + 1, 0).getDate();
@@ -54,8 +67,8 @@ const CalendarCard = () => {
         currentMonth === today.getMonth() &&
         currentYear === today.getFullYear();
 
-      const isHoliday = events.holiday.includes(d);
-      const isDeadline = events.deadline.includes(d);
+      const isHoliday = holidays.includes(d);
+      const isDeadline = deadlines.includes(d);
 
       const classes = [styles.date_cell];
 

@@ -8,8 +8,9 @@
 
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 15px;
 }
+
 .activities_title {
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
@@ -17,4 +18,69 @@
     line-height: 1.171875em;
     color: #000000;
     margin: 0;
+}
+
+.activities_list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  max-height: 280px;
+  padding-right: 4px;
+}
+
+.activity_item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+}
+
+.activity_icon {
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.activity_details {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-align: left;
+}
+
+.activity_action {
+  font-size: 13px;
+  font-weight: 600;
+  color: #0f172a;
+}
+
+.activity_desc {
+  font-size: 11px;
+  color: #475569;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.activity_time {
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.no_activities {
+  font-size: 14px;
+  color: #64748b;
+  text-align: center;
+  margin-top: 60px;
 }

@@ -60,6 +60,59 @@ class DashboardController extends Controller
         });
     }
 
+    private function getUserActivityLogs(int $userId): \Illuminate\Support\Collection
+    {
+        $responses = \App\Models\Response::with('form')
+            ->where('user_id', $userId)
+            ->get();
+
+        $activities = collect();
+
+        foreach ($responses as $response) {
+            $activities->push([
+                'id'             => 'submit_' . $response->id,
+                'title'          => 'Form Submitted',
+                'description'    => 'You submitted form: ' . ($response->form->title ?? 'Untitled Form'),
+                'status'         => 'submitted',
+                'created_at'     => $response->created_at->toISOString(),
+                'time_formatted' => $response->created_at->diffForHumans(),
+            ]);
+        }
+
+        $logs = \App\Models\ApprovalLog::with('response.form')
+            ->whereIn('response_id', $responses->pluck('id'))
+            ->get();
+
+        foreach ($logs as $log) {
+            $actionLabel = '';
+            $statusType = $log->action;
+            if ($log->action === 'approved') {
+                $actionLabel = 'Form Approved';
+                $desc = 'Your form "' . ($log->response->form->title ?? 'Form') . '" was approved by ' . $log->role;
+            } elseif ($log->action === 'rejected') {
+                $actionLabel = 'Form Rejected';
+                $desc = 'Your form "' . ($log->response->form->title ?? 'Form') . '" was rejected by ' . $log->role;
+            } elseif ($log->action === 'sent_back') {
+                $actionLabel = 'Form Sent Back';
+                $desc = 'Your form "' . ($log->response->form->title ?? 'Form') . '" was sent back by ' . $log->role;
+            } else {
+                $actionLabel = 'Form Forwarded';
+                $desc = 'Your form "' . ($log->response->form->title ?? 'Form') . '" was forwarded by ' . $log->role;
+            }
+
+            $activities->push([
+                'id'             => 'log_' . $log->id,
+                'title'          => $actionLabel,
+                'description'    => $desc,
+                'status'         => $statusType,
+                'created_at'     => $log->created_at->toISOString(),
+                'time_formatted' => $log->created_at->diffForHumans(),
+            ]);
+        }
+
+        return $activities->sortByDesc('created_at')->values()->take(10);
+    }
+
     public function index(Request $request, ApplicationStatsService $statsService)
     {
         $userId = $request->user()->id;
@@ -72,10 +125,7 @@ class DashboardController extends Controller
         return response()->json([
             'stats' => $statsService->getUserStats($userId),
 
-            'activity' => ApplicationLog::where('actor_id', $userId)
-                ->latest()
-                ->limit(10)
-                ->get(),
+            'activity' => $this->getUserActivityLogs($userId),
 
             'announcements' => Announcement::where('is_active', 1)
                 ->where(function ($q) {
@@ -100,10 +150,7 @@ class DashboardController extends Controller
     public function activity(Request $request)
     {
         return response()->json(
-            ApplicationLog::where('actor_id', $request->user()->id)
-                ->latest()
-                ->limit(10)
-                ->get()
+            $this->getUserActivityLogs($request->user()->id)
         );
     }
 
