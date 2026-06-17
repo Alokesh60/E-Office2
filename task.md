@@ -1,0 +1,6 @@
+- [x] Task 1: Fetch and display folders from GET /api/folders, auto-seeding defaults if empty.
+- [x] Task 2: Fetch and render files dynamically for the selected active folder.
+- [x] Task 3: Hook up file upload trigger and folder creation prompt with API state refreshing.
+- [x] Task 4: Integrate global file search and download/delete file actions in the table list.
+- [x] Task 5: Dynamically calculate and display user storage capacity from the backend.
+- [x] Task 6: Run npm run build and verify compilation correctness.

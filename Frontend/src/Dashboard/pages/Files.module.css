@@ -119,6 +119,9 @@
   border-radius: 8px;
   cursor: pointer;
   margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .folderItem:hover {
@@ -151,16 +154,17 @@
 
 .tableHeader {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr 1.5fr 1.2fr;
   font-weight: 600;
   margin-bottom: 10px;
 }
 
 .fileRow {
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 2fr 1.2fr 1fr 1fr 1.5fr 1.2fr;
   padding: 10px 0;
   border-top: 1px solid #e3e8ee;
+  align-items: center;
 }
 
 /* STORAGE */
@@ -230,4 +234,167 @@
   color: #5b6b79;
   text-align: center;
   line-height: 1.6;
+}
+
+/* FOLDER DELETE BTN */
+.folderDeleteBtn {
+  background: transparent;
+  border: none;
+  color: #708090;
+  cursor: pointer;
+  padding: 2px 6px;
+  font-size: 14px;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.folderDeleteBtn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.1);
+}
+
+/* MODAL STYLES */
+.modalOverlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  backdrop-filter: blur(4px);
+}
+
+.modalContent {
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  max-width: 450px;
+  width: 90%;
+  animation: modalScale 0.2s ease-out;
+}
+
+@keyframes modalScale {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.modalTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: 0;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.modalWarningText {
+  font-size: 14px;
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.05);
+  border-left: 4px solid #ef4444;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 16px 0;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+.modalDescription {
+  font-size: 15px;
+  color: #475569;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.modalActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.btnCancel {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnCancel:hover {
+  background-color: #e2e8f0;
+  color: #1e293b;
+}
+
+.btnDanger {
+  background-color: #ef4444;
+  color: #ffffff;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btnDanger:hover {
+  background-color: #dc2626;
+}
+
+/* FILE ACTIONS COLUMN */
+.fileActions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fileActionIcon {
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+  padding: 4px;
+  border-radius: 4px;
+}
+
+.viewIcon {
+  color: #3b82f6;
+}
+.viewIcon:hover {
+  color: #2563eb;
+  background: rgba(59, 130, 246, 0.1);
+}
+
+.renameIcon {
+  color: #10b981;
+}
+.renameIcon:hover {
+  color: #059669;
+  background: rgba(16, 185, 129, 0.1);
+}
+
+.deleteIcon {
+  color: #ef4444;
+}
+.deleteIcon:hover {
+  color: #dc2626;
+  background: rgba(239, 68, 68, 0.1);
 }

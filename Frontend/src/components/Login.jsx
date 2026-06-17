@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 import "./Login.css";
 
 function Login() {
@@ -41,16 +42,16 @@ function Login() {
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         localStorage.setItem("role", data.user.role);
-        alert("Login successful!");
+        toast.success("Login successful!");
 
         // redirect (optional)
         window.location.href = "/dashboard";
       } else {
-        alert("Invalid credentials");
+        toast.error("Invalid credentials");
       }
     } catch (err) {
       console.error("Login error:", err);
-      alert("Login failed - check console");
+      toast.error("Login failed - check console");
     }
   };
 
@@ -62,7 +63,7 @@ function Login() {
 
     // 🔐 PASSWORD MATCH CHECK
     if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+      toast.error("Passwords do not match!");
       return;
     }
 
@@ -93,7 +94,7 @@ function Login() {
       console.log("Register response:", data); // ✅ debug
 
       if (data.status === "success") {
-        alert("Registered successfully!");
+        toast.success("Registered successfully!");
         setUsername("");
         setEmail("");
         setRole("");
@@ -103,11 +104,11 @@ function Login() {
         setConfirmPassword("");
         setIsActive(false); // switch to login
       } else {
-        alert("Registration failed");
+        toast.error("Registration failed");
       }
     } catch (err) {
       console.error("Register error:", err);
-      alert("Registration failed - check console");
+      toast.error("Registration failed - check console");
     }
   };
 

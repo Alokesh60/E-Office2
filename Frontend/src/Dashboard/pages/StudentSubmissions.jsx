@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 import styles from "./StudentSubmissions.module.css";
 
 const StudentSubmissions = () => {
@@ -15,7 +16,7 @@ const StudentSubmissions = () => {
     })
       .then((res) => {
         if (res.status === 401) {
-          alert("Session expired. Please login again.");
+          toast.error("Session expired. Please login again.");
           window.location.href = "/";
           throw new Error("Unauthorized");
         }

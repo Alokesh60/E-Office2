@@ -12,7 +12,19 @@ class FileController extends Controller
     
     public function getFolders()
     {
-        return Folder::where('user_id', auth()->id())->get();
+        $userId = auth()->id();
+        $folders = Folder::where('user_id', $userId)->get();
+        if ($folders->isEmpty()) {
+            $defaultFolders = ["Documents", "Assignments", "Certificates", "Projects"];
+            foreach ($defaultFolders as $name) {
+                Folder::create([
+                    'name'    => $name,
+                    'user_id' => $userId
+                ]);
+            }
+            $folders = Folder::where('user_id', $userId)->get();
+        }
+        return $folders;
     }
 
     
