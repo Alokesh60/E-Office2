@@ -50,7 +50,18 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
-        $token = $user->createToken('auth_token')->plainTextToken;
+        $userAgent = $request->header('User-Agent') ?: 'Unknown Device';
+        $deviceName = \App\Http\Controllers\Api\SettingsController::parseDevice($userAgent);
+
+        $tokenResult = $user->createToken($deviceName);
+        $tokenModel = $tokenResult->accessToken;
+
+        $tokenModel->ip_address = $request->ip();
+        $tokenModel->user_agent = $userAgent;
+        $tokenModel->location = \App\Http\Controllers\Api\SettingsController::getIpLocation($request->ip());
+        $tokenModel->save();
+
+        $token = $tokenResult->plainTextToken;
 
         return response()->json([
             'status' => 'success',

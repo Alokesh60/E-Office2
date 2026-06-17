@@ -305,3 +305,74 @@
   flex-direction: column;
   gap: 15px;
 }
+
+.deviceItem {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 14px 16px;
+  background: #f5f9fc;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+}
+
+.deviceIcon {
+  font-size: 24px;
+  color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+}
+
+.deviceInfo {
+  flex: 1;
+  text-align: left;
+}
+
+.deviceInfo strong {
+  font-size: 15px;
+  color: #1e293b;
+}
+
+.deviceMeta {
+  font-size: 12px;
+  color: #64748b;
+  margin: 2px 0 1px 0;
+}
+
+.deviceTime {
+  font-size: 11px;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.subHeader {
+  font-size: 16px;
+  font-weight: 600;
+  color: #0f172a;
+  margin: 18px 0 10px;
+  text-align: left;
+}
+
+.logoutBtnSmall {
+  background: #e2e8f0;
+  color: #475569;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.logoutBtnSmall:hover {
+  background: #ef4444;
+  color: white;
+}
