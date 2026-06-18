@@ -122,8 +122,18 @@ class DashboardController extends Controller
             ->sortBy('date')
             ->values();
 
+        $stats = $statsService->getUserStats($userId);
+        if ($request->user()->role === 'admin') {
+            $stats = [
+                'total_users' => \App\Models\User::count(),
+                'total_applications' => \App\Models\Response::count(),
+                'pending_applications' => \App\Models\Response::where('status', 'pending')->count(),
+                'rejected_applications' => \App\Models\Response::where('status', 'rejected')->count(),
+            ];
+        }
+
         return response()->json([
-            'stats' => $statsService->getUserStats($userId),
+            'stats' => $stats,
 
             'activity' => $this->getUserActivityLogs($userId),
 

@@ -77,6 +77,58 @@ Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
     Route::post('/form-fields', function (Request $request) {
         return \App\Models\FormField::create($request->all());
     });
+
+    // Announcement Management
+    Route::get('/admin/announcements', function () {
+        return \App\Models\Announcement::latest()->get();
+    });
+
+    Route::post('/announcements', function (Request $request) {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+            'is_active' => 'boolean',
+            'expires_at' => 'nullable|date',
+        ]);
+        $validated['created_by'] = $request->user()->id;
+        return \App\Models\Announcement::create($validated);
+    });
+
+    Route::put('/announcements/{id}', function (Request $request, $id) {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'body' => 'required|string',
+            'is_active' => 'boolean',
+            'expires_at' => 'nullable|date',
+        ]);
+        $announcement = \App\Models\Announcement::findOrFail($id);
+        $announcement->update($validated);
+        return $announcement;
+    });
+
+    Route::delete('/announcements/{id}', function ($id) {
+        $announcement = \App\Models\Announcement::findOrFail($id);
+        $announcement->delete();
+        return response()->json(['message' => 'Announcement deleted successfully']);
+    });
+
+    // Calendar Event / Holiday Management
+    Route::post('/calendar-events', function (Request $request) {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'type' => 'required|in:holiday,deadline,event',
+            'date' => 'required|date_format:Y-m-d',
+        ]);
+        $validated['user_id'] = null; // Global event
+        return \App\Models\CalendarEvent::create($validated);
+    });
+
+    Route::delete('/calendar-events/{id}', function ($id) {
+        $event = \App\Models\CalendarEvent::findOrFail($id);
+        $event->delete();
+        return response()->json(['message' => 'Event deleted successfully']);
+    });
 });
 
 Route::get('/forms', function () {
@@ -95,11 +147,6 @@ Route::middleware(['auth:sanctum'])->get('/user', function (Request $request) {
 
 Route::middleware('auth:sanctum')->get('/dashboard', [DashboardController::class, 'index']);
 
-Route::middleware(['auth:sanctum', 'role:admin'])->group(function () {
-    Route::post('/announcements', function () {
-        return 'Admin only';
-    });
-});
 
 Route::middleware('auth:sanctum')->prefix('dashboard')->group(function () {
     Route::get('/stats', [DashboardController::class, 'stats']);
