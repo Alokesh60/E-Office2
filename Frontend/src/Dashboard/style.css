@@ -23,6 +23,10 @@
   box-sizing: border-box;
 }
 
+html, body {
+  background-color: #dde7f1;
+}
+
 body {
   font-family: "Roboto", sans-serif;
   background-color: #dde7f1;

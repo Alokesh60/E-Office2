@@ -2,6 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import DashboardLayout from "./components/DashboardLayout";
 import Dashboard from "./pages/Dashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 import Account from "./pages/Account";
 import Security from "./pages/Security";
 import Settings from "./pages/Settings";
@@ -20,14 +21,14 @@ import "./style.css";
 import "./dashboard.css";
 
 export default function App() {
-  const role = ""; // change dynamically later
+  const role = localStorage.getItem("role") || "";
 
   return (
     <>
       <Toaster position="top-right" reverseOrder={false} />
       <Routes>
         <Route path="/" element={<DashboardLayout />}>
-          <Route index element={<Dashboard />} />
+          <Route index element={role === "admin" ? <AdminDashboard /> : <Dashboard />} />
 
           <Route path="account" element={<Account />}>
             <Route path="about" element={<About />} />
