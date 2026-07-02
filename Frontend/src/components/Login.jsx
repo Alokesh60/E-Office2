@@ -139,46 +139,76 @@ function Login() {
     setShowForgotModal(true);
   };
 
-  const handleSendForgotOtp = (e) => {
+   const handleSendForgotOtp = async (e) => {
     e.preventDefault();
     if (!forgotEmail) {
       toast.error("Please enter your registered email address.");
       return;
     }
-    const code = "123456";
-    setGeneratedOtp(code);
-    
-    toast.promise(
-      new Promise((resolve) => setTimeout(resolve, 1200)),
-      {
-        loading: "Sending OTP to " + forgotEmail + "...",
-        success: <b>OTP sent! For demo verification, enter: 123456</b>,
-        error: <b>Error sending OTP.</b>,
+    const loadingToast = toast.loading("Sending OTP to " + forgotEmail + "...");
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/forgot-password-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: forgotEmail,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.status === "success") {
+        toast.dismiss(loadingToast);
+        toast.success("OTP sent! Please check your email.");
+        setForgotStep(2);
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(data.message || "Failed to send OTP.");
       }
-    ).then(() => {
-      setForgotStep(2);
-    });
+    } catch (err) {
+      console.error("Forgot OTP send error:", err);
+      toast.dismiss(loadingToast);
+      toast.error("Failed to send OTP - check console.");
+    }
   };
-
-  const handleVerifyForgotOtp = (e) => {
+  const handleVerifyForgotOtp = async (e) => {
     e.preventDefault();
-    if (forgotOtp === generatedOtp || forgotOtp === "123456") {
-      toast.success("OTP verified successfully!");
-      // Set localStorage token so protected route lets us in
-      localStorage.setItem("token", "mock-forgot-password-token");
-      localStorage.setItem("user", JSON.stringify({
-        username: forgotEmail.split('@')[0],
-        email: forgotEmail,
-        role: "student"
-      }));
-      localStorage.setItem("role", "student");
-      
-      setShowForgotModal(false);
-      setTimeout(() => {
-        window.location.href = "/dashboard";
-      }, 500);
-    } else {
-      toast.error("Invalid OTP code. Please try again.");
+    if (!forgotOtp) {
+      toast.error("Please enter the 6-digit OTP.");
+      return;
+    }
+    const loadingToast = toast.loading("Verifying OTP...");
+    try {
+      const res = await fetch("http://127.0.0.1:8000/api/verify-forgot-otp", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email: forgotEmail,
+          otp: forgotOtp,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.status === "success") {
+        toast.dismiss(loadingToast);
+        toast.success("OTP verified successfully!");
+        // Save token and user details to localStorage
+        localStorage.setItem("token", data.token);
+        localStorage.setItem("user", JSON.stringify(data.user));
+        localStorage.setItem("role", data.user.role);
+        setShowForgotModal(false);
+        setTimeout(() => {
+          window.location.href = "/dashboard";
+        }, 500);
+      } else {
+        toast.dismiss(loadingToast);
+        toast.error(data.message || "Invalid OTP code. Please try again.");
+      }
+    } catch (err) {
+      console.error("Forgot OTP verify error:", err);
+      toast.dismiss(loadingToast);
+      toast.error("Verification failed - check console.");
     }
   };
 

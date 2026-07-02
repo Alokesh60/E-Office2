@@ -165,6 +165,10 @@ Route::post('/custom-register', [AuthController::class, 'register']);
 
 Route::post('/login-custom', [AuthController::class, 'login']);
 
+Route::post('/forgot-password-otp', [AuthController::class, 'sendForgotPasswordOtp']);
+
+Route::post('/verify-forgot-otp', [AuthController::class, 'verifyForgotPasswordOtp']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
     // ── SETTINGS ──────────────────────────────────────────────────────────
