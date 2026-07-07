@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use App\Models\NotificationSetting;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Log;
 
 class SettingsController extends Controller
 {
@@ -117,36 +119,46 @@ class SettingsController extends Controller
      */
     public function updatePassword(Request $request)
     {
-        $request->validate([
+        $user = $request->user();
+        $rules = [
             'current_password' => 'required|string',
             'new_password'     => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = $request->user();
-
+        ];
+        if ($user->two_factor_enabled) {
+            $rules['two_factor_code'] = 'required|string|size:6';
+        }
+        $request->validate($rules);
+        // Verify 2FA code if enabled
+        if ($user->two_factor_enabled) {
+            if ($user->two_factor_code !== $request->two_factor_code || now()->greaterThan($user->two_factor_expires_at)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Invalid or expired verification code.'
+                ], 400);
+            }
+            // Clear used code
+            $user->two_factor_code = null;
+            $user->two_factor_expires_at = null;
+            $user->save();
+        }
+        // Verify current password
         if (!\Illuminate\Support\Facades\Hash::check($request->current_password, $user->password)) {
             return response()->json([
-                'message' => 'The provided password does not match your current password.',
-                'errors'  => [
-                    'current_password' => ['The provided password does not match your current password.']
-                ]
-            ], 422);
+                'status' => 'error',
+                'message' => 'The provided password does not match your current password.'
+            ], 400);
         }
-
+        // Verify new password != current password
         if (\Illuminate\Support\Facades\Hash::check($request->new_password, $user->password)) {
             return response()->json([
-                'message' => 'The new password cannot be the same as your current password.',
-                'errors'  => [
-                    'new_password' => ['The new password cannot be the same as your current password.']
-                ]
-            ], 422);
+                'status' => 'error',
+                'message' => 'The new password cannot be the same as your current password.'
+            ], 400);
         }
-
-        $user->update([
-            'password' => \Illuminate\Support\Facades\Hash::make($request->new_password)
-        ]);
-
+        $user->password = \Illuminate\Support\Facades\Hash::make($request->new_password);
+        $user->save();
         return response()->json([
+            'status'  => 'success',
             'message' => 'Password updated successfully'
         ]);
     }
@@ -393,5 +405,55 @@ class SettingsController extends Controller
         $user->tokens()->where('id', '!=', $currentToken)->delete();
 
         return response()->json(['message' => 'All other devices logged out successfully']);
+    }
+    public function getTwoFactorSettings(Request $request)
+    {
+        $user = $request->user();
+        return response()->json([
+            'two_factor_enabled' => (bool) $user->two_factor_enabled,
+            'two_factor_method'  => $user->two_factor_method,
+        ]);
+    }
+    /**
+     * Update User Two-Factor Settings
+     */
+    public function updateTwoFactorSettings(Request $request)
+    {
+        $request->validate([
+            'two_factor_enabled' => 'required|boolean',
+            'two_factor_method'  => 'required|in:sms,email',
+        ]);
+        $user = $request->user();
+        $user->two_factor_enabled = $request->two_factor_enabled;
+        $user->two_factor_method = $request->two_factor_method;
+        $user->save();
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Two-Factor Authentication settings updated successfully.'
+        ]);
+    }
+    /**
+     * Generate and Send 2FA Code
+     */
+    public function sendTwoFactorCode(Request $request)
+    {
+        $user = $request->user();
+        // Generate 6-digit random code
+        $code = rand(100000, 999999);
+        $user->two_factor_code = $code;
+        $user->two_factor_expires_at = now()->addMinutes(10);
+        $user->save();
+        if ($user->two_factor_method === 'email') {
+            Mail::raw("Your security verification code is: {$code}. It is valid for 10 minutes.", function ($message) use ($user) {
+                $message->to($user->email)->subject("Security Verification Code");
+            });
+        } else {
+            // Send SMS logic here. For development, we log it:
+            Log::info("SMS OTP sent to {$user->phone}: {$code}");
+        }
+        return response()->json([
+            'status'  => 'success',
+            'message' => 'Verification code sent.'
+        ]);
     }
 }
