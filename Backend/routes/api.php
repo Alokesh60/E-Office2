@@ -180,6 +180,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/avatar', [SettingsController::class, 'uploadAvatar']);
         Route::delete('/avatar', [SettingsController::class, 'removeAvatar']);
         Route::put('/password', [SettingsController::class, 'updatePassword']);
+        Route::get('/2fa', [SettingsController::class, 'getTwoFactorSettings']);
+        Route::put('/2fa', [SettingsController::class, 'updateTwoFactorSettings']);
+        Route::post('/2fa/send-code', [SettingsController::class, 'sendTwoFactorCode']);
 
         // Notifications
         Route::get('/notifications', [SettingsController::class, 'getNotifications']);
