@@ -168,3 +168,11 @@
   color: #888;
   padding: 40px 0;
 }
+
+@media screen and (min-width: 1600px) {
+  .wrapper {
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}

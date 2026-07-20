@@ -89,3 +89,13 @@
 .active_link i{
   color: var(--first-color) !important;
 }
+
+@media screen and (min-width: 1600px) {
+  .nav {
+    top: 110px;
+  }
+  .nav__list {
+    padding-block: 50px;
+    border-radius: 0 50px 50px 0;
+  }
+}

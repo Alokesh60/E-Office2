@@ -402,3 +402,10 @@
   background: #ef4444;
   color: white;
 }
+
+@media screen and (min-width: 1600px) {
+  .settingsPage {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}

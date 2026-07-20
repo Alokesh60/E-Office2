@@ -401,3 +401,10 @@
   border-color: #0b2e4f;
 }
 
+@media screen and (min-width: 1600px) {
+  .accountPage {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}
+

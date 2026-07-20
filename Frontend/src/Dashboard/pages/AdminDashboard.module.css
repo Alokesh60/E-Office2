@@ -789,3 +789,11 @@
   from { transform: translateY(15px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
 }
+
+@media screen and (min-width: 1600px) {
+  .adminDashboard {
+    max-width: 1600px;
+    margin: 0 auto;
+    width: 100%;
+  }
+}

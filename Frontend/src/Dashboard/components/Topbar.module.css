@@ -134,3 +134,15 @@ small {
   height: 100%;
   object-fit: cover;
 }
+
+@media screen and (min-width: 1600px) {
+  .top_header h1 {
+    line-height: 1.25;
+    font-size: 1.5rem;
+  }
+  .College {
+    width: 75px;
+    height: 75px;
+    object-fit: contain;
+  }
+}
