@@ -9,8 +9,6 @@ const FacultyApplication = () => {
 
   const [submission, setSubmission] = useState(null);
   const [activeTab, setActiveTab] = useState("forward");
-  const [showModal, setShowModal] = useState(false);
-  const [otp, setOtp] = useState("");
 
   // ✅ Fetch submission
   useEffect(() => {
@@ -20,17 +18,7 @@ const FacultyApplication = () => {
       .catch((err) => console.error(err));
   }, [id]);
 
-  const handleSubmitAction = () => {
-    setShowModal(true);
-  };
-
-  // ✅ FINAL ACTION AFTER OTP
-  const handleVerify = async () => {
-    if (otp.length !== 6) {
-      toast.error("Enter valid 6-digit OTP");
-      return;
-    }
-
+  const handleSubmitAction = async () => {
     try {
       let url = "";
 
@@ -56,9 +44,6 @@ const FacultyApplication = () => {
       console.error(err);
       toast.error("Error occurred");
     }
-
-    setShowModal(false);
-    setOtp("");
   };
 
   if (!submission) return <p>Loading...</p>;
@@ -146,25 +131,6 @@ const FacultyApplication = () => {
         </div>
       </div>
 
-      {/* OTP MODAL */}
-      {showModal && (
-        <div className={styles.overlay}>
-          <div className={styles.modal}>
-            <h2>Verify Action</h2>
-
-            <input
-              type="text"
-              maxLength="6"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="Enter OTP"
-              className={styles.otpInput}
-            />
-
-            <button onClick={handleVerify}>Verify & Submit</button>
-          </div>
-        </div>
-      )}
     </div>
   );
 };

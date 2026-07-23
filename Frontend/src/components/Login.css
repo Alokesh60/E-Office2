@@ -497,3 +497,9 @@ body.login-body #root {
   from { transform: scale(0.9) translateY(10px); opacity: 0; }
   to { transform: scale(1) translateY(0); opacity: 1; }
 }
+
+/* Hide native browser password reveal icons */
+.login-page input[type="password"]::-ms-reveal,
+.login-page input[type="password"]::-ms-clear {
+  display: none;
+}

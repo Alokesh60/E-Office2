@@ -183,3 +183,25 @@ main {
   overflow: hidden;
 } */
 /* Disable dashboard scaling on Account page */
+
+/* ================= LARGE / DESKTOP SCREENS ================= */
+@media screen and (min-width: 1600px) {
+  body {
+    zoom: 1;
+  }
+
+  .content-area {
+    max-width: 1650px;
+    margin: 0 auto;
+    padding: 30px 40px;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 320px 1fr 320px;
+    grid-template-areas:
+      "profile announcement stats"
+      "completion announcement stats"
+      "calendar quick recent";
+    gap: 28px;
+  }
+}

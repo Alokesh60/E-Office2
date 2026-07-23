@@ -140,8 +140,8 @@
 .radioItem {
   display: flex;
   align-items: center; /* keeps radio + text on same line */
-  gap: 14px;
-  font-size: 55px;
+  gap: 12px;
+  font-size: 15px;
   font-weight: 500;
   color: #022544;
   cursor: pointer;
@@ -149,8 +149,8 @@
 
 /* Make radio smaller */
 .radioItem input[type="radio"] {
-  width: 30px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
   accent-color: #0b2e4f;
   cursor: pointer;
 }
@@ -275,4 +275,11 @@
 @keyframes slideUp {
   from { transform: translateY(20px); opacity: 0; }
   to { transform: translateY(0); opacity: 1; }
+}
+
+@media screen and (min-width: 1600px) {
+  .settingsPage {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
 }
